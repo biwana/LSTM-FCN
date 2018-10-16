@@ -23,16 +23,15 @@ from keras import backend as K
 
 from utils.generic_utils import load_dataset_at, calculate_dataset_metrics, cutoff_choice, \
                                 cutoff_sequence, plot_dataset
-from utils.constants import MAX_SEQUENCE_LENGTH_LIST
+from utils.constants import max_seq_len
 
 
-def train_model(model:Model, dataset_id, dataset_prefix, epochs=50, batch_size=128, val_subset=None,
+def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, epochs=50, batch_size=128, val_subset=None,
                 cutoff=None, normalize_timeseries=False, learning_rate=1e-3):
-    X_train, y_train, X_test, y_test, is_timeseries = load_dataset_at(dataset_id,
-                                                                      normalize_timeseries=normalize_timeseries)
+    X_train, y_train, X_test, y_test, is_timeseries = load_dataset_at(dataset_id, method, proto_num, normalize_timeseries=normalize_timeseries)
     max_nb_words, sequence_length = calculate_dataset_metrics(X_train)
 
-    if sequence_length != MAX_SEQUENCE_LENGTH_LIST[dataset_id]:
+    if sequence_length != max_seq_len(dataset_id):
         if cutoff is None:
             choice = cutoff_choice(dataset_id, sequence_length)
         else:
@@ -45,8 +44,8 @@ def train_model(model:Model, dataset_id, dataset_prefix, epochs=50, batch_size=1
             X_train, X_test = cutoff_sequence(X_train, X_test, choice, dataset_id, sequence_length)
 
     if not is_timeseries:
-        X_train = pad_sequences(X_train, maxlen=MAX_SEQUENCE_LENGTH_LIST[dataset_id], padding='post', truncating='post')
-        X_test = pad_sequences(X_test, maxlen=MAX_SEQUENCE_LENGTH_LIST[dataset_id], padding='post', truncating='post')
+        X_train = pad_sequences(X_train, maxlen=max_seq_len(dataset_id), padding='post', truncating='post')
+        X_test = pad_sequences(X_test, maxlen=max_seq_len(dataset_id), padding='post', truncating='post')
 
     classes = np.unique(y_train)
     le = LabelEncoder()
@@ -83,13 +82,13 @@ def train_model(model:Model, dataset_id, dataset_prefix, epochs=50, batch_size=1
               class_weight=class_weight, verbose=2, validation_data=(X_test, y_test))
 
 
-def evaluate_model(model:Model, dataset_id, dataset_prefix, batch_size=128, test_data_subset=None,
+def evaluate_model(model:Model, dataset_id, method, proto_num, dataset_prefix, batch_size=128, test_data_subset=None,
                    cutoff=None, normalize_timeseries=False):
     _, _, X_test, y_test, is_timeseries = load_dataset_at(dataset_id,
                                                           normalize_timeseries=normalize_timeseries)
     max_nb_words, sequence_length = calculate_dataset_metrics(X_test)
 
-    if sequence_length != MAX_SEQUENCE_LENGTH_LIST[dataset_id]:
+    if sequence_length != max_seq_len(dataset_id):
         if cutoff is None:
             choice = cutoff_choice(dataset_id, sequence_length)
         else:
@@ -102,7 +101,7 @@ def evaluate_model(model:Model, dataset_id, dataset_prefix, batch_size=128, test
             _, X_test = cutoff_sequence(None, X_test, choice, dataset_id, sequence_length)
 
     if not is_timeseries:
-        X_test = pad_sequences(X_test, maxlen=MAX_SEQUENCE_LENGTH_LIST[dataset_id], padding='post', truncating='post')
+        X_test = pad_sequences(X_test, maxlen=max_seq_len(dataset_id), padding='post', truncating='post')
     y_test = to_categorical(y_test, len(np.unique(y_test)))
 
     optm = Adam(lr=1e-3)
@@ -129,7 +128,7 @@ def hyperparameter_search_over_model(model_gen, dataset_id, param_grid, cutoff=N
                                                             normalize_timeseries=normalize_timeseries)
     max_nb_words, sequence_length = calculate_dataset_metrics(X_train)
 
-    if sequence_length != MAX_SEQUENCE_LENGTH_LIST[dataset_id]:
+    if sequence_length != max_seq_len(dataset_id):
         if cutoff is None:
             choice = cutoff_choice(dataset_id, sequence_length)
         else:
@@ -218,7 +217,7 @@ def visualize_context_vector(model:Model, dataset_id, dataset_prefix, cutoff=Non
                                                      normalize_timeseries=normalize_timeseries)
     _, sequence_length = calculate_dataset_metrics(X_train)
 
-    if sequence_length != MAX_SEQUENCE_LENGTH_LIST[dataset_id]:
+    if sequence_length != max_seq_len(dataset_id):
         if cutoff is None:
             choice = cutoff_choice(dataset_id, sequence_length)
         else:
@@ -299,7 +298,7 @@ def visualize_cam(model:Model, dataset_id, dataset_prefix, class_id,
                                                            normalize_timeseries=normalize_timeseries)
     _, sequence_length = calculate_dataset_metrics(X_train)
 
-    if sequence_length != MAX_SEQUENCE_LENGTH_LIST[dataset_id]:
+    if sequence_length != max_seq_len(dataset_id):
         if cutoff is None:
             choice = cutoff_choice(dataset_id, sequence_length)
         else:

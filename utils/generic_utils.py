@@ -6,50 +6,38 @@ import matplotlib.pylab as plt
 
 mpl.style.use('seaborn-paper')
 
-from utils.constants import TRAIN_FILES, TEST_FILES, MAX_SEQUENCE_LENGTH_LIST, NB_CLASSES_LIST
+from utils.constants import max_seq_len, nb_classes
 
 
-def load_dataset_at(index, normalize_timeseries=False, verbose=True) -> (np.array, np.array):
-    assert index < len(TRAIN_FILES), "Index invalid. Could not load dataset at %d" % index
-    if verbose: print("Loading train / test dataset : ", TRAIN_FILES[index], TEST_FILES[index])
+def load_dataset_at(index, method, proto_num, normalize_timeseries=False, verbose=True) -> (np.array, np.array):
 
-    if os.path.exists(TRAIN_FILES[index]):
-        df = pd.read_csv(TRAIN_FILES[index], header=None, encoding='latin-1')
-    elif os.path.exists(TRAIN_FILES[index][1:]):
-        df = pd.read_csv(TRAIN_FILES[index][1:], header=None, encoding='latin-1')
-    else:
-        raise FileNotFoundError('File %s not found!' % (TRAIN_FILES[index]))
+    train_data = "data/all-dtw_features-plus-raw-train-data-%s-%s-%s.txt" % (index, method, str(proto_num))
+    train_labels = "data/all-train-label-%s-%s-%s.txt" % (index, method, str(proto_num))
+    test_data = "data/all-dtw_features-plus-raw-test-data-%s-%s-%s.txt" % (index, method, str(proto_num))
+    test_labels = "data/all-test-label-%s-%s-%s.txt" % (index, method, str(proto_num))
+
+    if verbose: print("Loading train / test dataset : ", train_data, test_data)
 
     is_timeseries = True # assume all input data is univariate time series
 
-    # remove all columns which are completely empty
-    df.dropna(axis=1, how='all', inplace=True)
+    if os.path.exists(train_data):
+        df = pd.read_csv(train_data, delimiter=' ', header=None, encoding='latin-1')
+    else:
+        raise FileNotFoundError('File %s not found!' % (train_data))
 
-    if not is_timeseries:
-        data_idx = df.columns[1:]
-        min_val = min(df.loc[:, data_idx].min())
-        if min_val == 0:
-            df.loc[:, data_idx] += 1
+    X_train = ( df.values / 127.5 ) -1.
 
-    # fill all missing columns with 0
-    df.fillna(0, inplace=True)
+    if os.path.exists(train_labels):
+        df = pd.read_csv(train_labels, delimiter=' ', header=None, encoding='latin-1')
+    else:
+        raise FileNotFoundError('File %s not found!' % (train_labels))
 
-    # cast all data into integer (int32)
-    if not is_timeseries:
-        df[df.columns] = df[df.columns].astype(np.int32)
+    y_train = df[[1]].values
 
-    # extract labels Y and normalize to [0 - (MAX - 1)] range
-    y_train = df[[0]].values
     nb_classes = len(np.unique(y_train))
-    y_train = (y_train - y_train.min()) / (y_train.max() - y_train.min()) * (nb_classes - 1)
-
-    # drop labels column from train set X
-    df.drop(df.columns[0], axis=1, inplace=True)
-
-    X_train = df.values
 
     if is_timeseries:
-        X_train = X_train[:, np.newaxis, :]
+        X_train = np.reshape(X_train, (np.shape(X_train)[0], 1+proto_num, int(np.shape(X_train)[1]/(1+proto_num))))
         # scale the values
         if normalize_timeseries:
             X_train_mean = X_train.mean()
@@ -58,41 +46,23 @@ def load_dataset_at(index, normalize_timeseries=False, verbose=True) -> (np.arra
 
     if verbose: print("Finished loading train dataset..")
 
-    if os.path.exists(TEST_FILES[index]):
-        df = pd.read_csv(TEST_FILES[index], header=None, encoding='latin-1')
-    elif os.path.exists(TEST_FILES[index][1:]):
-        df = pd.read_csv(TEST_FILES[index][1:], header=None, encoding='latin-1')
+    if os.path.exists(test_data):
+        df = pd.read_csv(test_data, delimiter=' ', header=None, encoding='latin-1')
     else:
-        raise FileNotFoundError('File %s not found!' % (TEST_FILES[index]))
+        raise FileNotFoundError('File %s not found!' % (test_data))
 
-    # remove all columns which are completely empty
-    df.dropna(axis=1, how='all', inplace=True)
 
-    if not is_timeseries:
-        data_idx = df.columns[1:]
-        min_val = min(df.loc[:, data_idx].min())
-        if min_val == 0:
-            df.loc[:, data_idx] += 1
+    X_test = ( df.values / 127.5 ) -1.
 
-    # fill all missing columns with 0
-    df.fillna(0, inplace=True)
+    if os.path.exists(test_labels):
+        df = pd.read_csv(test_labels, delimiter=' ', header=None, encoding='latin-1')
+    else:
+        raise FileNotFoundError('File %s not found!' % (test_labels))
 
-    # cast all data into integer (int32)
-    if not is_timeseries:
-        df[df.columns] = df[df.columns].astype(np.int32)
-
-    # extract labels Y and normalize to [0 - (MAX - 1)] range
-    y_test = df[[0]].values
-    nb_classes = len(np.unique(y_test))
-    y_test = (y_test - y_test.min()) / (y_test.max() - y_test.min()) * (nb_classes - 1)
-
-    # drop labels column from train set X
-    df.drop(df.columns[0], axis=1, inplace=True)
-
-    X_test = df.values
+    y_test = df[[1]].values
 
     if is_timeseries:
-        X_test = X_test[:, np.newaxis, :]
+        X_test = np.reshape(X_test, (np.shape(X_test)[0], 1+proto_num, int(np.shape(X_test)[1]/(1+proto_num))))
         # scale the values
         if normalize_timeseries:
             X_test = (X_test - X_train_mean) / (X_train_std + 1e-8)
@@ -138,7 +108,7 @@ def plot_dataset(dataset_id, seed=None, limit=None, cutoff=None,
 
         max_nb_words, sequence_length = calculate_dataset_metrics(X_train)
 
-        if sequence_length != MAX_SEQUENCE_LENGTH_LIST[dataset_id]:
+        if sequence_length != max_seq_len(dataset_id):
             if cutoff is None:
                 choice = cutoff_choice(dataset_id, sequence_length)
             else:
@@ -165,8 +135,8 @@ def plot_dataset(dataset_id, seed=None, limit=None, cutoff=None,
             test_size = limit
         else:
             assert limit == 1, 'If plotting classwise, limit must be 1 so as to ensure number of samples per class = 1'
-            train_size = NB_CLASSES_LIST[dataset_id] * limit
-            test_size = NB_CLASSES_LIST[dataset_id] * limit
+            train_size = nb_classes(dataset_id) * limit
+            test_size = nb_classes(dataset_id) * limit
 
     if not plot_classwise:
         train_idx = np.random.randint(0, X_train.shape[0], size=train_size)
@@ -184,7 +154,7 @@ def plot_dataset(dataset_id, seed=None, limit=None, cutoff=None,
 
         classwise_sample_size_list = [len(x[0]) for x in classwise_train_list]
         size = min(classwise_sample_size_list)
-        train_size = min([train_size // NB_CLASSES_LIST[dataset_id], size])
+        train_size = min([train_size // nb_classes(dataset_id), size])
 
         for i in range(len(classwise_train_list)):
             classwise_train_idx = np.random.randint(0, len(classwise_train_list[i][0]), size=train_size)
@@ -326,7 +296,7 @@ def plot_dataset(dataset_id, seed=None, limit=None, cutoff=None,
 
 def cutoff_choice(dataset_id, sequence_length):
     print("Original sequence length was :", sequence_length, "New sequence Length will be : ",
-          MAX_SEQUENCE_LENGTH_LIST[dataset_id])
+          max_seq_len(dataset_id))
     choice = input('Options : \n'
                    '`pre` - cut the sequence from the beginning\n'
                    '`post`- cut the sequence from the end\n'
@@ -339,9 +309,9 @@ def cutoff_choice(dataset_id, sequence_length):
 
 
 def cutoff_sequence(X_train, X_test, choice, dataset_id, sequence_length):
-    assert MAX_SEQUENCE_LENGTH_LIST[dataset_id] < sequence_length, "If sequence is to be cut, max sequence" \
+    assert max_seq_len(dataset_id) < sequence_length, "If sequence is to be cut, max sequence" \
                                                                    "length must be less than original sequence length."
-    cutoff = sequence_length - MAX_SEQUENCE_LENGTH_LIST[dataset_id]
+    cutoff = sequence_length - max_seq_len(dataset_id)
     if choice == 'pre':
         if X_train is not None:
             X_train = X_train[:, :, cutoff:]
@@ -352,7 +322,7 @@ def cutoff_sequence(X_train, X_test, choice, dataset_id, sequence_length):
             X_train = X_train[:, :, :-cutoff]
         if X_test is not None:
             X_test = X_test[:, :, :-cutoff]
-    print("New sequence length :", MAX_SEQUENCE_LENGTH_LIST[dataset_id])
+    print("New sequence length :", max_seq_len(dataset_id))
     return X_train, X_test
 
 
