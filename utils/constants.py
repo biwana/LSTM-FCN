@@ -344,3 +344,177 @@ def nb_classes(dataset):
     if dataset == "yoga":
         return 2 #426
     exit('missing dataset')
+
+# not used but here just in case
+def train_size(dataset):
+    if dataset == "50words":
+        return 450
+    if dataset == "Adiac":
+        return 390
+    if dataset == "ArrowHead":
+        return 36
+    if dataset == "Beef":
+        return 30
+    if dataset == "BeetleFly":
+        return 20
+    if dataset == "BirdChicken":
+        return 20
+    if dataset == "Car":
+        return 60
+    if dataset == "CBF":
+        return 30
+    if dataset == "ClorineConcentration":
+        return 467
+    if dataset == "CinC_ECG_torso":
+        return 40
+    if dataset == "Coffee":
+        return 28
+    if dataset == "Computers":
+        return 250
+    if dataset == "Cricket_X":
+        return 390
+    if dataset == "Cricket_Y":
+        return 390
+    if dataset == "Cricket_Z":
+        return 390
+    if dataset == "DiatomSizeReduction":
+        return 16
+    if dataset == "DistalPhalanxOutlineAgeGroup":
+        return 139
+    if dataset == "DistalPhalanxOutlineCorrect":
+        return 276
+    if dataset == "DistalPhalanxTW":
+        return 139
+    if dataset == "Earthquakes":
+        return 139
+    if dataset == "ECG200":
+        return 100
+    if dataset == "ECG5000":
+        return 500
+    if dataset == "ECGFiveDays":
+        return 23
+    if dataset == "ElectricDevices":
+        return 8926
+    if dataset == "FaceAll":
+        return 560
+    if dataset == "FaceFour":
+        return 350
+    if dataset == "FacesUCR":
+        return 24
+    if dataset == "FISH":
+        return 175
+    if dataset == "FordA":
+        return 1320
+    if dataset == "FordB":
+        return 810
+    if dataset == "Gun_Point":
+        return 50
+    if dataset == "Ham":
+        return 109
+    if dataset == "HandOutlines":
+        return 370
+    if dataset == "Haptics":
+        return 155
+    if dataset == "Herring":
+        return 64
+    if dataset == "InlineSkate":
+        return 100
+    if dataset == "InsectWingbeatSound":
+        return 220
+    if dataset == "ItalyPowerDemand":
+        return 67
+    if dataset == "LargeKitchenAppliances":
+        return 375
+    if dataset == "Lightning2":
+        return 60
+    if dataset == "Lightning7":
+        return 70
+    if dataset == "MALLAT":
+        return 55
+    if dataset == "Meat":
+        return 60
+    if dataset == "MedicalImages":
+        return 381
+    if dataset == "MiddlePhalanxOutlineAgeGroup":
+        return 154
+    if dataset == "MiddlePhalanxOutlineCorrect":
+        return 291
+    if dataset == "MiddlePhalanxTW":
+        return 154
+    if dataset == "MoteStrain":
+        return 20
+    if dataset == "NonInvasiveFatalECG_Thorax1":
+        return 1800
+    if dataset == "NonInvasiveFatalECG_Thorax2":
+        return 1800
+    if dataset == "OliveOil":
+        return 30
+    if dataset == "OSULeaf":
+        return 200
+    if dataset == "PhalangesOutlinesCorrect":
+        return 1800
+    if dataset == "Phoneme":
+        return 214
+    if dataset == "Plane":
+        return 105
+    if dataset == "ProximalPhalanxOutlineAgeGroup":
+        return 400
+    if dataset == "ProximalPhalanxOutlineCorrect":
+        return 600
+    if dataset == "ProximalPhalanxTW":
+        return 205
+    if dataset == "RefrigerationDevices":
+        return 375
+    if dataset == "ScreenType":
+        return 375
+    if dataset == "ShapeletSim":
+        return 20
+    if dataset == "ShapesAll":
+        return 600
+    if dataset == "SmallKitchenAppliances":
+        return 375
+    if dataset == "SonyAIBORobotSurfaceII":
+        return 20
+    if dataset == "SonyAIBORobotSurface":
+        return 27
+    if dataset == "StarLightCurves":
+        return 1000
+    if dataset == "Strawberry":
+        return 370
+    if dataset == "SwedishLeaf":
+        return 500
+    if dataset == "Symbols":
+        return 25
+    if dataset == "synthetic_control":
+        return 300
+    if dataset == "ToeSegmentation1":
+        return 40
+    if dataset == "ToeSegmentation2":
+        return 36
+    if dataset == "Trace":
+        return 100
+    if dataset == "TwoLeadECG":
+        return 23
+    if dataset == "Two_Patterns":
+        return 1000
+    if dataset == "uWaveGestureLibrary_X":
+        return 896
+    if dataset == "uWaveGestureLibrary_Y":
+        return 896
+    if dataset == "uWaveGestureLibrary_Z":
+        return 896
+    if dataset == "UWaveGestureLibraryAll":
+        return 896
+    if dataset == "wafer":
+        return 1000
+    if dataset == "Wine":
+        return 57
+    if dataset == "WordSynonyms":
+        return 267
+    if dataset == "Worms":
+        return 77
+    if dataset == "WormsTwoClass":
+        return 77
+    if dataset == "yoga":
+        return 300
+    exit('missing dataset')

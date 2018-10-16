@@ -131,8 +131,10 @@ def generate_model_2(proto_num, max_seq_lenth, nb_class):
     x = concatenate([x1, x2])
 
     x = Dense(1024, activation='relu')(x)
+    x = Dropout(0.5)(x)
 
     x = Dense(1024, activation='relu')(x)
+    x = Dropout(0.5)(x)
 
     out = Dense(nb_class, activation='softmax')(x)
 
@@ -155,9 +157,9 @@ if __name__ == "__main__":
 
     model = generate_model_2(proto_num, max_seq_lenth, nb_class)
 
-    train_model(model, dataset, method, proto_num, dataset_prefix=dataset, epochs=8000, batch_size=64)
+    train_model(model, dataset, method, proto_num, dataset_prefix=dataset, nb_iterations=100000, batch_size=50, learning_rate=0.0001)
 
-    evaluate_model(model, dataset, method, proto_num, dataset_prefix=dataset, batch_size=64)
+    evaluate_model(model, dataset, method, proto_num, dataset_prefix=dataset, batch_size=batch_size, learning_rate=0.0001)
 
     # visualize_context_vector(model, DATASET_INDEX, dataset_prefix='swedish_leaf', visualize_sequence=True,
     #                          visualize_classwise=True, limit=1)

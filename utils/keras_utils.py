@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import math
 
 mpl.style.use('seaborn-paper')
 
@@ -26,7 +27,7 @@ from utils.generic_utils import load_dataset_at, calculate_dataset_metrics, cuto
 from utils.constants import max_seq_len
 
 
-def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, epochs=50, batch_size=128, val_subset=None,
+def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_iterations=100000, batch_size=128, val_subset=None,
                 cutoff=None, normalize_timeseries=False, learning_rate=1e-3):
     X_train, y_train, X_test, y_test, is_timeseries = load_dataset_at(dataset_id, method, proto_num, normalize_timeseries=normalize_timeseries)
     max_nb_words, sequence_length = calculate_dataset_metrics(X_train)
@@ -59,16 +60,16 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, epoc
     y_train = to_categorical(y_train, len(np.unique(y_train)))
     y_test = to_categorical(y_test, len(np.unique(y_test)))
 
-    if is_timeseries:
-        factor = 1. / np.cbrt(2)
-    else:
-        factor = 1. / np.sqrt(2)
+    #if is_timeseries:
+    #    factor = 1. / np.cbrt(2)
+    #else:
+    #    factor = 1. / np.sqrt(2)
 
     model_checkpoint = ModelCheckpoint("./weights/%s_weights.h5" % dataset_prefix, verbose=1,
                                        monitor='loss', save_best_only=True, save_weights_only=True)
-    reduce_lr = ReduceLROnPlateau(monitor='loss', patience=100, mode='auto',
-                                  factor=factor, cooldown=0, min_lr=1e-4, verbose=2)
-    callback_list = [model_checkpoint, reduce_lr]
+    #reduce_lr = ReduceLROnPlateau(monitor='loss', patience=100, mode='auto',
+    #                              factor=factor, cooldown=0, min_lr=1e-4, verbose=2)
+    callback_list = [model_checkpoint]
 
     optm = Adam(lr=learning_rate)
 
@@ -78,7 +79,10 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, epoc
         X_test = X_test[:val_subset]
         y_test = y_test[:val_subset]
 
-    model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, callbacks=callback_list,
+    #calculate num of batches
+    nb_epochs = math.ceil(nb_iterations * (batch_size / X_train.shape[0]))
+
+    model.fit(X_train, y_train, batch_size=batch_size, epochs=nb_epochs, callbacks=callback_list,
               class_weight=class_weight, verbose=2, validation_data=(X_test, y_test))
 
 
