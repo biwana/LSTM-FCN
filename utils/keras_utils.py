@@ -18,7 +18,7 @@ from keras.layers import Permute
 from keras.optimizers import Adam
 from keras.utils import to_categorical
 from keras.preprocessing.sequence import pad_sequences
-from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
+from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, TensorBoard, CSVLogger
 from keras.wrappers.scikit_learn import KerasClassifier
 from keras import backend as K
 
