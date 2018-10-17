@@ -157,7 +157,7 @@ if __name__ == "__main__":
 
     model = generate_model_2(proto_num, max_seq_lenth, nb_class)
 
-    train_model(model, dataset, method, proto_num, dataset_prefix=dataset, nb_iterations=100000, batch_size=50, learning_rate=0.0001)
+    #train_model(model, dataset, method, proto_num, dataset_prefix=dataset, nb_iterations=100000, batch_size=50, learning_rate=0.0001)
 
     evaluate_model(model, dataset, method, proto_num, dataset_prefix=dataset, batch_size=50, learning_rate=0.0001)
 
