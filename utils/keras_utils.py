@@ -28,7 +28,7 @@ from utils.constants import max_seq_len
 
 
 def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_iterations=100000, batch_size=128, val_subset=None,
-                cutoff=None, normalize_timeseries=False, learning_rate=1e-3):
+                cutoff=None, normalize_timeseries=False, learning_rate=1e-3, early_stop=False):
     X_train, y_train, X_test, y_test, is_timeseries = load_dataset_at(dataset_id, method, proto_num, normalize_timeseries=normalize_timeseries)
     max_nb_words, sequence_length = calculate_dataset_metrics(X_train)
 
@@ -69,7 +69,14 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
                                        monitor='loss', save_best_only=True, save_weights_only=True)
     #reduce_lr = ReduceLROnPlateau(monitor='loss', patience=100, mode='auto',
     #                              factor=factor, cooldown=0, min_lr=1e-4, verbose=2)
-    callback_list = [model_checkpoint]
+
+    tensorboard = TensorBoard(log_dir='./logs', batch_size=batch_size, update_freq='epoch')
+    csv_logger = CSVLogger('./logs/%s.log' % dataset_prefix)
+    if early_stop:
+        early_stopping = EarlyStopping(monitor='loss', patience=100, mode='auto', verbose=2, restore_best_weights=True)
+        callback_list = [model_checkpoint, early_stopping, tensorboard, csv_logger]
+    else:
+        callback_list = [model_checkpoint, tensorboard, csv_logger]
 
     optm = Adam(lr=learning_rate)
 
