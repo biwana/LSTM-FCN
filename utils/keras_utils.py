@@ -88,7 +88,7 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
 
 def evaluate_model(model:Model, dataset_id, method, proto_num, dataset_prefix, batch_size=128, test_data_subset=None,
                    cutoff=None, normalize_timeseries=False):
-    _, _, X_test, y_test, is_timeseries = oad_dataset_at(dataset_id, method, proto_num,
+    _, _, X_test, y_test, is_timeseries = load_dataset_at(dataset_id, method, proto_num,
                                                           normalize_timeseries=normalize_timeseries)
     max_nb_words, sequence_length = calculate_dataset_metrics(X_test)
 
