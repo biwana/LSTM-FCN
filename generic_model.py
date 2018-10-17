@@ -159,7 +159,7 @@ if __name__ == "__main__":
 
     train_model(model, dataset, method, proto_num, dataset_prefix=dataset, nb_iterations=100000, batch_size=50, learning_rate=0.0001)
 
-    evaluate_model(model, dataset, method, proto_num, dataset_prefix=dataset, batch_size=batch_size, learning_rate=0.0001)
+    evaluate_model(model, dataset, method, proto_num, dataset_prefix=dataset, batch_size=50, learning_rate=0.0001)
 
     # visualize_context_vector(model, DATASET_INDEX, dataset_prefix='swedish_leaf', visualize_sequence=True,
     #                          visualize_classwise=True, limit=1)
