@@ -120,7 +120,7 @@ def evaluate_model(model:Model, dataset_id, method, proto_num, dataset_prefix, b
     optm = Adam(lr=1e-3)
     model.compile(optimizer=optm, loss='categorical_crossentropy', metrics=['accuracy'])
 
-    model.load_weights("./weights/%s_%s_weights.h5" % (dataset_prefix, checkpoint_prefix))
+    model.load_weights("./weights/%s_%s_%s_%s_weights.h5" % (dataset_prefix, method, str(proto_num), checkpoint_prefix))
 
     if test_data_subset is not None:
         X_test = X_test[:test_data_subset]
