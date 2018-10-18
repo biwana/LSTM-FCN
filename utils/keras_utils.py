@@ -65,9 +65,9 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
     else:
         factor = 1. / np.sqrt(2)
 
-    model_checkpoint1 = ModelCheckpoint("./weights/%s_loss_weights.h5" % dataset_prefix, verbose=1,
+    model_checkpoint1 = ModelCheckpoint("./weights/%s_%s_%s_loss_weights.h5" % (dataset_prefix, method, str(proto_num)), verbose=1,
                                        monitor='loss', save_best_only=True, save_weights_only=True)
-    model_checkpoint2 = ModelCheckpoint("./weights/%s_val_acc_weights.h5" % dataset_prefix, verbose=2,
+    model_checkpoint2 = ModelCheckpoint("./weights/%s_%s_%s_val_acc_weights.h5" % (dataset_prefix, method, str(proto_num)), verbose=2,
                                        monitor='val_acc', save_best_only=True, save_weights_only=True)
     reduce_lr = ReduceLROnPlateau(monitor='loss', patience=100, mode='auto',
                                   factor=factor, cooldown=0, min_lr=learning_rate/10., verbose=2)
