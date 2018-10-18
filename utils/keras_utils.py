@@ -18,7 +18,7 @@ from keras.layers import Permute
 from keras.optimizers import Adam
 from keras.utils import to_categorical
 from keras.preprocessing.sequence import pad_sequences
-from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, TensorBoard, CSVLogger
+from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, TensorBoard, CSVLogger, EarlyStopping
 from keras.wrappers.scikit_learn import KerasClassifier
 from keras import backend as K
 
@@ -60,23 +60,25 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
     y_train = to_categorical(y_train, len(np.unique(y_train)))
     y_test = to_categorical(y_test, len(np.unique(y_test)))
 
-    #if is_timeseries:
-    #    factor = 1. / np.cbrt(2)
-    #else:
-    #    factor = 1. / np.sqrt(2)
+    if is_timeseries:
+        factor = 1. / np.cbrt(2)
+    else:
+        factor = 1. / np.sqrt(2)
 
-    model_checkpoint = ModelCheckpoint("./weights/%s_weights.h5" % dataset_prefix, verbose=1,
+    model_checkpoint1 = ModelCheckpoint("./weights/%s_loss_weights.h5" % dataset_prefix, verbose=1,
                                        monitor='loss', save_best_only=True, save_weights_only=True)
-    #reduce_lr = ReduceLROnPlateau(monitor='loss', patience=100, mode='auto',
-    #                              factor=factor, cooldown=0, min_lr=1e-4, verbose=2)
+    model_checkpoint2 = ModelCheckpoint("./weights/%s_val_acc_weights.h5" % dataset_prefix, verbose=2,
+                                       monitor='val_acc', save_best_only=True, save_weights_only=True)
+    reduce_lr = ReduceLROnPlateau(monitor='loss', patience=100, mode='auto',
+                                  factor=factor, cooldown=0, min_lr=0.0001, verbose=2)
 
     tensorboard = TensorBoard(log_dir='./logs', batch_size=batch_size, update_freq='epoch')
     csv_logger = CSVLogger('./logs/%s.log' % dataset_prefix)
     if early_stop:
-        early_stopping = EarlyStopping(monitor='loss', patience=100, mode='auto', verbose=2, restore_best_weights=True)
-        callback_list = [model_checkpoint, early_stopping, tensorboard, csv_logger]
+        early_stopping = EarlyStopping(monitor='loss', patience=500, mode='auto', verbose=2, restore_best_weights=True)
+        callback_list = [model_checkpoint1, model_checkpoint2, early_stopping, tensorboard, csv_logger]
     else:
-        callback_list = [model_checkpoint, tensorboard, csv_logger]
+        callback_list = [model_checkpoint1, model_checkpoint2, tensorboard, csv_logger]
 
     optm = Adam(lr=learning_rate)
 
@@ -94,7 +96,7 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
 
 
 def evaluate_model(model:Model, dataset_id, method, proto_num, dataset_prefix, batch_size=128, test_data_subset=None,
-                   cutoff=None, normalize_timeseries=False):
+                   cutoff=None, normalize_timeseries=False, checkpoint_prefix="loss"):
     _, _, X_test, y_test, is_timeseries = load_dataset_at(dataset_id, method, proto_num,
                                                           normalize_timeseries=normalize_timeseries)
     max_nb_words, sequence_length = calculate_dataset_metrics(X_test)
@@ -118,7 +120,7 @@ def evaluate_model(model:Model, dataset_id, method, proto_num, dataset_prefix, b
     optm = Adam(lr=1e-3)
     model.compile(optimizer=optm, loss='categorical_crossentropy', metrics=['accuracy'])
 
-    model.load_weights("./weights/%s_weights.h5" % dataset_prefix)
+    model.load_weights("./weights/%s_%s_weights.h5" % (dataset_prefix, checkpoint_prefix))
 
     if test_data_subset is not None:
         X_test = X_test[:test_data_subset]
