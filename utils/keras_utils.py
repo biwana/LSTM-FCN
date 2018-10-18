@@ -70,7 +70,7 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
     model_checkpoint2 = ModelCheckpoint("./weights/%s_val_acc_weights.h5" % dataset_prefix, verbose=2,
                                        monitor='val_acc', save_best_only=True, save_weights_only=True)
     reduce_lr = ReduceLROnPlateau(monitor='loss', patience=100, mode='auto',
-                                  factor=factor, cooldown=0, min_lr=0.0001, verbose=2)
+                                  factor=factor, cooldown=0, min_lr=learning_rate/10., verbose=2)
 
     tensorboard = TensorBoard(log_dir='./logs', batch_size=batch_size, update_freq='epoch')
     csv_logger = CSVLogger('./logs/%s.log' % dataset_prefix)
