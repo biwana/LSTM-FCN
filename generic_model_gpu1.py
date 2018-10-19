@@ -71,8 +71,10 @@ def generate_model(proto_num, max_seq_lenth, nb_class):
     x = concatenate([x1, x2])
 
     x = Dense(1024, activation='relu')(x)
+    x = Dropout(0.5)(x)
 
     x = Dense(1024, activation='relu')(x)
+    x = Dropout(0.5)(x)
 
     out = Dense(nb_class, activation='softmax')(x)
 
