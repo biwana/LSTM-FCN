@@ -73,7 +73,7 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
                                   factor=factor, cooldown=0, min_lr=learning_rate/10., verbose=2)
 
     tensorboard = TensorBoard(log_dir='./logs', batch_size=batch_size, update_freq='epoch')
-    csv_logger = CSVLogger('./logs/%s_%s_%s.csv" % (dataset_prefix, method, str(proto_num)))
+    csv_logger = CSVLogger('./logs/%s_%s_%s.csv' % (dataset_prefix, method, str(proto_num)))
     if early_stop:
         early_stopping = EarlyStopping(monitor='loss', patience=500, mode='auto', verbose=2, restore_best_weights=True)
         callback_list = [model_checkpoint1, model_checkpoint2, early_stopping, tensorboard, csv_logger]
