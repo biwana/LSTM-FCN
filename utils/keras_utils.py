@@ -24,7 +24,7 @@ from keras import backend as K
 
 from utils.generic_utils import load_dataset_at, calculate_dataset_metrics, cutoff_choice, \
                                 cutoff_sequence, plot_dataset
-from utils.constants import max_seq_len
+from utils.constants import max_seq_len, nb_classes
 
 
 def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_iterations=100000, batch_size=128, val_subset=None,
@@ -54,7 +54,7 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
     nb_epochs = math.ceil(nb_iterations * (batch_size / X_train.shape[0]))
 
 
-    classes = np.unique(y_train)
+    classes = np.arange(0, nb_classes(dataset_id)) #np.unique(y_train)
     le = LabelEncoder()
     y_ind = le.fit_transform(y_train.ravel())
     recip_freq = len(y_train) / (len(le.classes_) *
