@@ -48,6 +48,12 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
         X_train = pad_sequences(X_train, maxlen=max_seq_len(dataset_id), padding='post', truncating='post')
         X_test = pad_sequences(X_test, maxlen=max_seq_len(dataset_id), padding='post', truncating='post')
 
+
+
+    #calculate num of batches
+    nb_epochs = math.ceil(nb_iterations * (batch_size / X_train.shape[0]))
+
+
     classes = np.unique(y_train)
     le = LabelEncoder()
     y_ind = le.fit_transform(y_train.ravel())
@@ -69,7 +75,7 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
                                        monitor='loss', save_best_only=True, save_weights_only=True)
     model_checkpoint2 = ModelCheckpoint("./weights/%s_%s_%s_val_acc_weights.h5" % (dataset_prefix, method, str(proto_num)), verbose=2,
                                        monitor='val_acc', save_best_only=True, save_weights_only=True)
-    reduce_lr = ReduceLROnPlateau(monitor='loss', patience=100, mode='auto',
+    reduce_lr = ReduceLROnPlateau(monitor='loss', patience=math.ceil(nb_epochs / 20), mode='auto',
                                   factor=factor, cooldown=0, min_lr=learning_rate/10., verbose=2)
 
     tensorboard = TensorBoard(log_dir='./logs', batch_size=batch_size, update_freq='epoch')
@@ -88,8 +94,6 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
         X_test = X_test[:val_subset]
         y_test = y_test[:val_subset]
 
-    #calculate num of batches
-    nb_epochs = math.ceil(nb_iterations * (batch_size / X_train.shape[0]))
 
     model.fit(X_train, y_train, batch_size=batch_size, epochs=nb_epochs, callbacks=callback_list,
               class_weight=class_weight, verbose=2, validation_data=(X_test, y_test))
