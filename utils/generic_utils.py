@@ -199,7 +199,7 @@ def plot_dataset(dataset_id, seed=None, limit=None, cutoff=None,
 
         classwise_sample_size_list = [len(x[0]) for x in classwise_test_list]
         size = min(classwise_sample_size_list)
-        test_size = min([test_size // nb_classes(dataset_id, size])
+        test_size = min([test_size // nb_classes(dataset_id), size])
 
         for i in range(len(classwise_test_list)):
             classwise_test_idx = np.random.randint(0, len(classwise_test_list[i][0]), size=test_size)
