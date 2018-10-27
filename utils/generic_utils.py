@@ -34,7 +34,7 @@ def load_dataset_at(index, method, proto_num, normalize_timeseries=False, verbos
 
     y_train = df[[1]].values
 
-    nb_classes = nb_classes(index) #len(np.unique(y_train))
+    no_classes = nb_classes(index) #len(np.unique(y_train))
 
     if is_timeseries:
         X_train = np.reshape(X_train, (np.shape(X_train)[0], 1+proto_num, int(np.shape(X_train)[1]/(1+proto_num))))
@@ -71,7 +71,7 @@ def load_dataset_at(index, method, proto_num, normalize_timeseries=False, verbos
         print("Finished loading test dataset..")
         print()
         print("Number of train samples : ", X_train.shape[0], "Number of test samples : ", X_test.shape[0])
-        print("Number of classes : ", nb_classes)
+        print("Number of classes : ", no_classes)
         print("Sequence length : ", X_train.shape[-1])
 
 
@@ -199,7 +199,7 @@ def plot_dataset(dataset_id, seed=None, limit=None, cutoff=None,
 
         classwise_sample_size_list = [len(x[0]) for x in classwise_test_list]
         size = min(classwise_sample_size_list)
-        test_size = min([test_size // nb_classes(dataset_id), size])
+        test_size = min([test_size // nb_classes(dataset_id, size])
 
         for i in range(len(classwise_test_list)):
             classwise_test_idx = np.random.randint(0, len(classwise_test_list[i][0]), size=test_size)
