@@ -28,7 +28,7 @@ from utils.constants import max_seq_len, nb_classes
 
 
 def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_iterations=100000, batch_size=128, val_subset=None,
-                cutoff=None, normalize_timeseries=False, learning_rate=1e-3, early_stop=False):
+                cutoff=None, normalize_timeseries=False, learning_rate=1e-3, early_stop=False, balance_classes=True):
     X_train, y_train, X_test, y_test, is_timeseries = load_dataset_at(dataset_id, method, proto_num, normalize_timeseries=normalize_timeseries)
     max_nb_words, sequence_length = calculate_dataset_metrics(X_train)
 
@@ -53,13 +53,13 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
     #calculate num of batches
     nb_epochs = math.ceil(nb_iterations * (batch_size / X_train.shape[0]))
 
-
-    classes = np.arange(0, nb_classes(dataset_id)) #np.unique(y_train)
-    le = LabelEncoder()
-    y_ind = le.fit_transform(y_train.ravel())
-    recip_freq = len(y_train) / (len(le.classes_) *
+    if balance_classes == True:
+        classes = np.arange(0, nb_classes(dataset_id)) #np.unique(y_train)
+        le = LabelEncoder()
+        y_ind = le.fit_transform(y_train.ravel())
+        recip_freq = len(y_train) / (len(le.classes_) *
                            np.bincount(y_ind).astype(np.float64))
-    class_weight = recip_freq[le.transform(classes)]
+        class_weight = recip_freq[le.transform(classes)]
 
     print("Class weights : ", class_weight)
 
@@ -95,8 +95,11 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
         y_test = y_test[:val_subset]
 
 
-    model.fit(X_train, y_train, batch_size=batch_size, epochs=nb_epochs, callbacks=callback_list,
+    if balance_classes:
+        model.fit(X_train, y_train, batch_size=batch_size, epochs=nb_epochs, callbacks=callback_list,
               class_weight=class_weight, verbose=2, validation_data=(X_test, y_test))
+    else:
+        model.fit(X_train, y_train, batch_size=batch_size, epochs=nb_epochs, callbacks=callback_list, verbose=2, validation_data=(X_test, y_test))
 
 
 def evaluate_model(model:Model, dataset_id, method, proto_num, dataset_prefix, batch_size=128, test_data_subset=None,
