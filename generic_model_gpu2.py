@@ -12,10 +12,12 @@ if __name__ == "__main__":
     dataset = sys.argv[1]
     method = sys.argv[2]
     proto_num = int(sys.argv[3])
-    nb_cnn = int(sys.argv[4])
+    #nb_cnn = int(sys.argv[4])
 
     max_seq_lenth = max_seq_len(dataset)
     nb_class = nb_classes(dataset)
+    nb_cnn = int(round(math.log(max_seq_lenth, 2))-3)
+    print("Number of Conv Layers: %s" % str(nb_cnn))
 
     #model = lstm_fcn_model(proto_num, max_seq_lenth, nb_class)
     #model = alstm_fcn_model(proto_num, max_seq_lenth, nb_class)
