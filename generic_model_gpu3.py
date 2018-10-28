@@ -4,7 +4,8 @@ from utils.model_utils import lstm_fcn_model, alstm_fcn_model
 from utils.model_utils import cnn_raw_model, cnn_dtwfeatures_model, cnn_earlyfusion_model, cnn_midfusion_model, cnn_latefusion_model
 
 import sys
-
+import math
+import numpy as np
 import os
 os.environ["CUDA_VISIBLE_DEVICES"]="3"
 
