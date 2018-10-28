@@ -61,7 +61,7 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
                            np.bincount(y_ind).astype(np.float64))
         class_weight = recip_freq[le.transform(classes)]
 
-    print("Class weights : ", class_weight)
+        print("Class weights : ", class_weight)
 
     y_train = to_categorical(y_train, len(np.unique(y_train)))
     y_test = to_categorical(y_test, len(np.unique(y_test)))
