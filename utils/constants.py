@@ -78,9 +78,9 @@ def max_seq_len(dataset):
         return 24
     if dataset == "LargeKitchenAppliances":
         return 720
-    if dataset == "Lightning2":
+    if dataset == "Lighting2":
         return 637
-    if dataset == "Lightning7":
+    if dataset == "Lighting7":
         return 319
     if dataset == "MALLAT":
         return 1024
@@ -162,7 +162,7 @@ def max_seq_len(dataset):
         return 152
     if dataset == "Wine":
         return 234
-    if dataset == "WordSynonyms":
+    if dataset == "WordsSynonyms":
         return 270
     if dataset == "Worms":
         return 900
@@ -251,9 +251,9 @@ def nb_classes(dataset):
         return 2 # 24
     if dataset == "LargeKitchenAppliances":
         return 3 # 720
-    if dataset == "Lightning2":
+    if dataset == "Lighting2":
         return 2 # 637
-    if dataset == "Lightning7":
+    if dataset == "Lighting7":
         return 7 # 319
     if dataset == "MALLAT":
         return 8 # 1024
@@ -335,7 +335,7 @@ def nb_classes(dataset):
         return 2 #152
     if dataset == "Wine":
         return 2 #234
-    if dataset == "WordSynonyms":
+    if dataset == "WordsSynonyms":
         return 25 #270
     if dataset == "Worms":
         return 5 #900
@@ -425,9 +425,9 @@ def train_size(dataset):
         return 67
     if dataset == "LargeKitchenAppliances":
         return 375
-    if dataset == "Lightning2":
+    if dataset == "Lighting2":
         return 60
-    if dataset == "Lightning7":
+    if dataset == "Lighting7":
         return 70
     if dataset == "MALLAT":
         return 55
@@ -509,7 +509,7 @@ def train_size(dataset):
         return 1000
     if dataset == "Wine":
         return 57
-    if dataset == "WordSynonyms":
+    if dataset == "WordsSynonyms":
         return 267
     if dataset == "Worms":
         return 77
