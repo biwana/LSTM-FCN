@@ -32,7 +32,9 @@ if __name__ == "__main__":
     train_model(model, dataset, method, proto_num, dataset_prefix=dataset, nb_iterations=100000, batch_size=50, learning_rate=0.0001, early_stop=False, balance_classes=False)
     #train_model(model, dataset, method, proto_num, dataset_prefix=dataset, nb_iterations=28000, batch_size=64, learning_rate=0.001, early_stop=True)
 
-    evaluate_model(model, dataset, method, proto_num, dataset_prefix=dataset, batch_size=50, checkpoint_prefix="loss")
+    acc = evaluate_model(model, dataset, method, proto_num, dataset_prefix=dataset, batch_size=50, checkpoint_prefix="loss")
+    np.savetxt("output/%s-%s-%s-loss-%s" % (dataset, method, str(proto_num), str(acc)), [acc])
 
-    evaluate_model(model, dataset, method, proto_num, dataset_prefix=dataset, batch_size=50, checkpoint_prefix="val_acc")
+    acc = evaluate_model(model, dataset, method, proto_num, dataset_prefix=dataset, batch_size=50, checkpoint_prefix="val_acc")
+    np.savetxt("output/%s-%s-%s-vacc-%s" % (dataset, method, str(proto_num), str(acc)), [acc])
 
