@@ -97,9 +97,9 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
 
     if balance_classes:
         model.fit(X_train, y_train, batch_size=batch_size, epochs=nb_epochs, callbacks=callback_list,
-              class_weight=class_weight, verbose=2, validation_data=(X_test, y_test))
+              class_weight=class_weight, verbose=0, validation_data=(X_test, y_test))
     else:
-        model.fit(X_train, y_train, batch_size=batch_size, epochs=nb_epochs, callbacks=callback_list, verbose=2, validation_data=(X_test, y_test))
+        model.fit(X_train, y_train, batch_size=batch_size, epochs=nb_epochs, callbacks=callback_list, verbose=0, validation_data=(X_test, y_test))
 
 
 def evaluate_model(model:Model, dataset_id, method, proto_num, dataset_prefix, batch_size=128, test_data_subset=None,
