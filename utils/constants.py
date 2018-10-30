@@ -16,7 +16,7 @@ def max_seq_len(dataset):
         return 577
     if dataset == "CBF":
         return 128
-    if dataset == "ClorineConcentration":
+    if dataset == "ChlorineConcentration":
         return 166
     if dataset == "CinC_ECG_torso":
         return 1639
@@ -189,7 +189,7 @@ def nb_classes(dataset):
         return 4 #577
     if dataset == "CBF":
         return 3 #128
-    if dataset == "ClorineConcentration":
+    if dataset == "ChlorineConcentration":
         return 3 #166
     if dataset == "CinC_ECG_torso":
         return 4 #1639
@@ -363,7 +363,7 @@ def train_size(dataset):
         return 60
     if dataset == "CBF":
         return 30
-    if dataset == "ClorineConcentration":
+    if dataset == "ChlorineConcentration":
         return 467
     if dataset == "CinC_ECG_torso":
         return 40
