@@ -1,13 +1,24 @@
 from utils.constants import max_seq_len, nb_classes
-from utils.keras_utils import train_model, evaluate_model, set_trainable, visualize_context_vector, visualize_cam
-from utils.model_utils import lstm_fcn_model, alstm_fcn_model
-from utils.model_utils import cnn_raw_model, cnn_dtwfeatures_model, cnn_earlyfusion_model, cnn_midfusion_model, cnn_latefusion_model
-from utils.model_utils import vgg_raw_model, vgg_dtwfeatures_model, vgg_earlyfusion_model, vgg_midfusion_model, vgg_latefusion_model
+from keras.models import Model
+from keras.layers import Input, Dense, multiply, concatenate, Activation, Lambda
+from keras.layers import PReLU, LSTM
+from keras.layers import Conv1D, BatchNormalization, GlobalAveragePooling1D, Permute, Dropout
+from keras.layers import MaxPooling1D, Flatten
+from keras.optimizers import Adam, SGD
+from keras.utils import to_categorical
+from keras.preprocessing.sequence import pad_sequences
+from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, TensorBoard, CSVLogger, EarlyStopping
+from keras.wrappers.scikit_learn import KerasClassifier
+from keras import backend as K
 
 import sys
 import math
 import numpy as np
 import os
+import pandas as pd
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 def play_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
@@ -44,6 +55,56 @@ def play_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
     model.summary()
 
     return model
+
+def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_iterations=100000, batch_size=128, val_subset=None, cutoff=None, normalize_timeseries=False, learning_rate=1e-3, early_stop=False, balance_classes=True, run_ver=''):
+    X_train, y_train, X_test, y_test, is_timeseries = load_dataset_at(dataset_id, method, proto_num, normalize_timeseries=normalize_timeseries)
+    max_nb_words, sequence_length = calculate_dataset_metrics(X_train)
+
+    #calculate num of batches
+    nb_epochs = math.ceil(nb_iterations * (batch_size / X_train.shape[0]))
+
+    if balance_classes == True:
+        classes = np.arange(0, nb_classes(dataset_id)) #np.unique(y_train)
+        le = LabelEncoder()
+        y_ind = le.fit_transform(y_train.ravel())
+        recip_freq = len(y_train) / (len(le.classes_) *
+                           np.bincount(y_ind).astype(np.float64))
+        class_weight = recip_freq[le.transform(classes)]
+
+        print("Class weights : ", class_weight)
+
+    y_train = to_categorical(y_train, nb_classes(dataset_id))
+    y_test = to_categorical(y_test, nb_classes(dataset_id))
+
+    if is_timeseries:
+        factor = 1. / np.cbrt(2)
+    else:
+        factor = 1. / np.sqrt(2)
+
+    reduce_lr = ReduceLROnPlateau(monitor='loss', patience=math.ceil(nb_epochs / 20), mode='auto',
+                                  factor=factor, cooldown=0, min_lr=learning_rate/10., verbose=2)
+
+    if early_stop:
+        early_stopping = EarlyStopping(monitor='loss', patience=500, mode='auto', verbose=2, restore_best_weights=True)
+        callback_list = [early_stopping]
+    else:
+        callback_list = []
+
+    optm = Adam(lr=learning_rate)
+    #optm = SGD(lr=learning_rate, momentum=0.9, decay=5e-4)
+
+    model.compile(optimizer=optm, loss='categorical_crossentropy', metrics=['accuracy'])
+
+    if val_subset is not None:
+        X_test = X_test[:val_subset]
+        y_test = y_test[:val_subset]
+
+
+    if balance_classes:
+        model.fit(X_train, y_train, batch_size=batch_size, epochs=nb_epochs, callbacks=callback_list,
+              class_weight=class_weight, verbose=2, validation_data=(X_test, y_test))
+    else:
+        model.fit(X_train, y_train, batch_size=batch_size, epochs=nb_epochs, callbacks=callback_list, verbose=2, validation_data=(X_test, y_test))
 
 
 if __name__ == "__main__":
