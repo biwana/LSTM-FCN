@@ -63,8 +63,8 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
 
         print("Class weights : ", class_weight)
 
-    y_train = to_categorical(y_train, len(np.unique(y_train)))
-    y_test = to_categorical(y_test, len(np.unique(y_test)))
+    y_train = to_categorical(y_train, nb_classes(dataset_id))
+    y_test = to_categorical(y_test, nb_classes(dataset_id))
 
     if is_timeseries:
         factor = 1. / np.cbrt(2)
