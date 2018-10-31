@@ -28,7 +28,7 @@ from utils.constants import max_seq_len, nb_classes
 
 
 def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_iterations=100000, batch_size=128, val_subset=None,
-                cutoff=None, normalize_timeseries=False, learning_rate=1e-3, early_stop=False, balance_classes=True):
+                cutoff=None, normalize_timeseries=False, learning_rate=1e-3, early_stop=False, balance_classes=True, run_ver=''):
     X_train, y_train, X_test, y_test, is_timeseries = load_dataset_at(dataset_id, method, proto_num, normalize_timeseries=normalize_timeseries)
     max_nb_words, sequence_length = calculate_dataset_metrics(X_train)
 
@@ -71,15 +71,15 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
     else:
         factor = 1. / np.sqrt(2)
 
-    model_checkpoint1 = ModelCheckpoint("./weights/%s_%s_%s_loss_weights.h5" % (dataset_prefix, method, str(proto_num)), verbose=1,
+    model_checkpoint1 = ModelCheckpoint("./weights/%s_%s_%s_%sloss_weights.h5" % (dataset_prefix, method, str(proto_num), run_ver), verbose=2,
                                        monitor='loss', save_best_only=True, save_weights_only=True)
-    model_checkpoint2 = ModelCheckpoint("./weights/%s_%s_%s_val_acc_weights.h5" % (dataset_prefix, method, str(proto_num)), verbose=2,
+    model_checkpoint2 = ModelCheckpoint("./weights/%s_%s_%s_%sval_acc_weights.h5" % (dataset_prefix, method, str(proto_num), run_ver), verbose=2,
                                        monitor='val_acc', save_best_only=True, save_weights_only=True)
     reduce_lr = ReduceLROnPlateau(monitor='loss', patience=math.ceil(nb_epochs / 20), mode='auto',
                                   factor=factor, cooldown=0, min_lr=learning_rate/10., verbose=2)
 
-    tensorboard = TensorBoard(log_dir='./logs', batch_size=batch_size, update_freq='epoch')
-    csv_logger = CSVLogger('./logs/%s_%s_%s.csv' % (dataset_prefix, method, str(proto_num)))
+    tensorboard = TensorBoard(log_dir='./logs/%s%s_%s_%s' % (run_ver, dataset_prefix, method, str(proto_num)), batch_size=batch_size, update_freq='epoch')
+    csv_logger = CSVLogger('./logs/%s%s_%s_%s.csv' % (run_ver, dataset_prefix, method, str(proto_num)))
     if early_stop:
         early_stopping = EarlyStopping(monitor='loss', patience=500, mode='auto', verbose=2, restore_best_weights=True)
         callback_list = [model_checkpoint1, model_checkpoint2, early_stopping, tensorboard, csv_logger]
