@@ -21,6 +21,15 @@ import matplotlib.pyplot as plt
 
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
+
+TRAINABLE = True
+
+def slice_seq(x):
+    return x[:, :1]
+
+def slice_dtw(x):
+    return x[:, 1:]
+
 def play_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
     ip = Input(shape=(1+proto_num, max_seq_lenth))
 
