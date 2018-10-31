@@ -12,7 +12,8 @@ from keras.wrappers.scikit_learn import KerasClassifier
 from keras import backend as K
 
 from utils.constants import max_seq_len, nb_classes
-from utils.generic_utils import load_dataset_at
+from utils.generic_utils import load_dataset_at, calculate_dataset_metrics, cutoff_choice, \
+                                cutoff_sequence, plot_dataset
 import sys
 import math
 import numpy as np
@@ -69,7 +70,6 @@ def play_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
 def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_iterations=100000, batch_size=128, val_subset=None, cutoff=None, normalize_timeseries=False, learning_rate=1e-3, early_stop=False, balance_classes=True, run_ver=''):
     X_train, y_train, X_test, y_test, is_timeseries = load_dataset_at(dataset_id, method, proto_num, normalize_timeseries=normalize_timeseries)
-    max_nb_words, sequence_length = calculate_dataset_metrics(X_train)
 
     #calculate num of batches
     nb_epochs = math.ceil(nb_iterations * (batch_size / X_train.shape[0]))
