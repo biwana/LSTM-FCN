@@ -1,4 +1,4 @@
-from utils.constants import max_seq_len, nb_classes
+
 from keras.models import Model
 from keras.layers import Input, Dense, multiply, concatenate, Activation, Lambda
 from keras.layers import PReLU, LSTM
@@ -11,6 +11,8 @@ from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, TensorBoard, CSV
 from keras.wrappers.scikit_learn import KerasClassifier
 from keras import backend as K
 
+from utils.constants import max_seq_len, nb_classes
+from utils.generic_utils import load_dataset_at
 import sys
 import math
 import numpy as np
