@@ -41,25 +41,35 @@ def play_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
     ip1 = Lambda(slice_seq)(ip)
     ip2 = Lambda(slice_dtw)(ip)
 
-    x = Permute((2, 1))(ip1)
+    x1 = Permute((2, 1))(ip1)
+    x2 = Permute((2, 1))(ip2)
 
     for i in range(nb_cnn):
         i_prime = i if i < 3 else 3
-        nb_nodes = 64 * 2 ** i_prime 
+        nb_nodes = 64 * 2 ** i_prime
 
-        x = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x)
-        x = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x)
+        x1 = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x1)
+        x1 = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x1)
+
+        x2 = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x2)
+        x2 = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x2)
         if i > 2:
-            x = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x)
+            x1 = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x1)
 
-        x = MaxPooling1D(pool_size=2)(x)
+            x2 = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x2)
+
+        x1 = MaxPooling1D(pool_size=2)(x1)
+        x2 = MaxPooling1D(pool_size=2)(x2)
+
+
+    x = concatenate([x1, x2])
 
     x = Flatten()(x)
 
-    x = Dense(1024, activation='relu')(x)
+    x = Dense(4096, activation='relu')(x)
     x = Dropout(0.5)(x)
 
-    x = Dense(1024, activation='relu')(x)
+    x = Dense(4096, activation='relu')(x)
     x = Dropout(0.5)(x)
 
     out = Dense(nb_class, activation='softmax')(x)

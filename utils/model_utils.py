@@ -314,8 +314,8 @@ def vgg_raw_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
     x = Permute((2, 1))(ip1)
 
     for i in range(nb_cnn):
-        factor = i if i < 3 else 3
-        nb_nodes = 64 * 2 ** i
+        i_prime = i if i < 3 else 3
+        nb_nodes = 64 * 2 ** i_prime
 
         x = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x)
         x = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x)
@@ -326,10 +326,10 @@ def vgg_raw_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     x = Flatten()(x)
 
-    x = Dense(4096, activation='relu')(x)
+    x = Dense(1024, activation='relu')(x)
     x = Dropout(0.5)(x)
 
-    x = Dense(4096, activation='relu')(x)
+    x = Dense(1024, activation='relu')(x)
     x = Dropout(0.5)(x)
 
     out = Dense(nb_class, activation='softmax')(x)
@@ -349,8 +349,8 @@ def vgg_dtwfeatures_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
     x = Permute((2, 1))(ip2)
 
     for i in range(nb_cnn):
-        factor = i if i < 3 else 3
-        nb_nodes = 64 * 2 ** i
+        i_prime = i if i < 3 else 3
+        nb_nodes = 64 * 2 ** i_prime
 
         x = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x)
         x = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x)
@@ -361,10 +361,10 @@ def vgg_dtwfeatures_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     x = Flatten()(x)
 
-    x = Dense(4096, activation='relu')(x)
+    x = Dense(1024, activation='relu')(x)
     x = Dropout(0.5)(x)
 
-    x = Dense(4096, activation='relu')(x)
+    x = Dense(1024, activation='relu')(x)
     x = Dropout(0.5)(x)
 
     out = Dense(nb_class, activation='softmax')(x)
@@ -381,8 +381,8 @@ def vgg_earlyfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
     x = Permute((2, 1))(ip)
 
     for i in range(nb_cnn):
-        factor = i if i < 3 else 3
-        nb_nodes = 64 * 2 ** i
+        i_prime = i if i < 3 else 3
+        nb_nodes = 64 * 2 ** i_prime
 
         x = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x)
         x = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x)
@@ -393,10 +393,10 @@ def vgg_earlyfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     x = Flatten()(x)
 
-    x = Dense(4096, activation='relu')(x)
+    x = Dense(1024, activation='relu')(x)
     x = Dropout(0.5)(x)
 
-    x = Dense(4096, activation='relu')(x)
+    x = Dense(1024, activation='relu')(x)
     x = Dropout(0.5)(x)
 
     out = Dense(nb_class, activation='softmax')(x)
@@ -417,8 +417,8 @@ def vgg_midfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
     x2 = Permute((2, 1))(ip2)
 
     for i in range(nb_cnn):
-        factor = i if i < 3 else 3
-        nb_nodes = 64 * 2 ** i
+        i_prime = i if i < 3 else 3
+        nb_nodes = 64 * 2 ** i_prime
 
         x1 = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x1)
         x1 = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x1)
@@ -438,10 +438,10 @@ def vgg_midfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     x = Flatten()(x)
 
-    x = Dense(4096, activation='relu')(x)
+    x = Dense(1024, activation='relu')(x)
     x = Dropout(0.5)(x)
 
-    x = Dense(4096, activation='relu')(x)
+    x = Dense(1024, activation='relu')(x)
     x = Dropout(0.5)(x)
 
     out = Dense(nb_class, activation='softmax')(x)
@@ -463,8 +463,8 @@ def vgg_latefusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
     x2 = Permute((2, 1))(ip2)
 
     for i in range(nb_cnn):
-        factor = i if i < 3 else 3
-        nb_nodes = 64 * 2 ** i
+        i_prime = i if i < 3 else 3
+        nb_nodes = 64 * 2 ** i_prime
 
         x1 = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x1)
         x1 = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x1)
