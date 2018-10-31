@@ -11,6 +11,8 @@ from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, TensorBoard, CSV
 from keras.wrappers.scikit_learn import KerasClassifier
 from keras import backend as K
 
+from sklearn.preprocessing import LabelEncoder
+
 from utils.constants import max_seq_len, nb_classes
 from utils.generic_utils import load_dataset_at, calculate_dataset_metrics, cutoff_choice, \
                                 cutoff_sequence, plot_dataset
@@ -42,8 +44,8 @@ def play_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
     x = Permute((2, 1))(ip1)
 
     for i in range(nb_cnn):
-        factor = i if i < 3 else 3
-        nb_nodes = 64 * 2 ** i
+        i_prime = i if i < 3 else 3
+        nb_nodes = 64 * 2 ** i_prime 
 
         x = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x)
         x = Conv1D(nb_nodes, 3, padding='same', activation='relu', kernel_initializer='he_uniform')(x)
@@ -54,10 +56,10 @@ def play_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     x = Flatten()(x)
 
-    x = Dense(4096, activation='relu')(x)
+    x = Dense(1024, activation='relu')(x)
     x = Dropout(0.5)(x)
 
-    x = Dense(4096, activation='relu')(x)
+    x = Dense(1024, activation='relu')(x)
     x = Dropout(0.5)(x)
 
     out = Dense(nb_class, activation='softmax')(x)
@@ -144,7 +146,6 @@ if __name__ == "__main__":
     #model = vgg_latefusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class)
 
     model = play_model(nb_cnn, proto_num, max_seq_lenth, nb_class)
-
 
     train_model(model, dataset, method, proto_num, dataset_prefix=dataset, nb_iterations=50000, batch_size=50, learning_rate=0.0001, early_stop=False, balance_classes=False, run_ver='vgg_')
     #train_model(model, dataset, method, proto_num, dataset_prefix=dataset, nb_iterations=28000, batch_size=64, learning_rate=0.001, early_stop=True)
