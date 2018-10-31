@@ -78,7 +78,7 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
     reduce_lr = ReduceLROnPlateau(monitor='loss', patience=math.ceil(nb_epochs / 20), mode='auto',
                                   factor=factor, cooldown=0, min_lr=learning_rate/10., verbose=2)
 
-    tensorboard = TensorBoard(log_dir='./logs/%s%s_%s_%s' % (run_ver, dataset_prefix, method, str(proto_num)), batch_size=batch_size, update_freq='epoch')
+    tensorboard = TensorBoard(log_dir='./logs/%s%s_%s_%s' % (run_ver, dataset_prefix, method, str(proto_num)), batch_size=batch_size)
     csv_logger = CSVLogger('./logs/%s%s_%s_%s.csv' % (run_ver, dataset_prefix, method, str(proto_num)))
     if early_stop:
         early_stopping = EarlyStopping(monitor='loss', patience=500, mode='auto', verbose=2, restore_best_weights=True)
