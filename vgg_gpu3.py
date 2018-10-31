@@ -35,8 +35,7 @@ if __name__ == "__main__":
     model = vgg_midfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class)
     #model = vgg_latefusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class)
 
-    train_model(model, dataset, method, proto_num, dataset_prefix=dataset, nb_iterations=50000, batch_size=50, learning_rate=0.0001, early_stop=False, balance_classes=False, run_ver='vgg_')
-    #train_model(model, dataset, method, proto_num, dataset_prefix=dataset, nb_iterations=28000, batch_size=64, learning_rate=0.001, early_stop=True)
+    train_model(model, dataset, method, proto_num, dataset_prefix=dataset, nb_iterations=50000, batch_size=50, opt='Nadam', learning_rate=0.0001, early_stop=False, balance_classes=False, run_ver='vgg_')
 
     acc = evaluate_model(model, dataset, method, proto_num, dataset_prefix=dataset, batch_size=50, checkpoint_prefix="vgg_loss")
     np.savetxt("output/vgg/vgg-%s-%s-%s-loss-%s" % (dataset, method, str(proto_num), str(acc)), [acc])

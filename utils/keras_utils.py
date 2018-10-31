@@ -15,7 +15,7 @@ warnings.simplefilter('ignore', category=DeprecationWarning)
 
 from keras.models import Model
 from keras.layers import Permute
-from keras.optimizers import Adam
+from keras.optimizers import Adam, SGD, Nadam
 from keras.utils import to_categorical
 from keras.preprocessing.sequence import pad_sequences
 from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, TensorBoard, CSVLogger, EarlyStopping
@@ -28,7 +28,7 @@ from utils.constants import max_seq_len, nb_classes
 
 
 def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_iterations=100000, batch_size=128, val_subset=None,
-                cutoff=None, normalize_timeseries=False, learning_rate=1e-3, early_stop=False, balance_classes=True, run_ver=''):
+                cutoff=None, normalize_timeseries=False, opt='Adam', learning_rate=1e-3, early_stop=False, balance_classes=True, run_ver=''):
     X_train, y_train, X_test, y_test, is_timeseries = load_dataset_at(dataset_id, method, proto_num, normalize_timeseries=normalize_timeseries)
     max_nb_words, sequence_length = calculate_dataset_metrics(X_train)
 
@@ -86,7 +86,12 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
     else:
         callback_list = [model_checkpoint1, model_checkpoint2, tensorboard, csv_logger]
 
-    optm = Adam(lr=learning_rate)
+    if opt == 'SGD':
+        optm = SGD(lr=learning_rate, momentum=0.9, decay=5e-4)
+    elif opt == 'Nadam':
+        optm = Nadam(lr=learning_rate)
+    else:
+        optm = Adam(lr=learning_rate)
 
     model.compile(optimizer=optm, loss='categorical_crossentropy', metrics=['accuracy'])
 
