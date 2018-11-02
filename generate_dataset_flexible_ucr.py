@@ -109,17 +109,17 @@ if __name__ == "__main__":
     no_classes = nb_classes(version)
     # print(proto_number)
 
-    train_data = (full_train[:,1:] - train_min(version)) / (train_max(version) - train_min(version))
+    train_data = 1. - 2. * (full_train[:,1:] - train_min(version)) / (train_max(version) - train_min(version))
     train_labels = (full_train[:,0] + class_modifier_add(version))*class_modifier_multi(version)
 
     train_number = np.shape(train_labels)[0]
-    print(np.shape(train_data))
-    print(np.shape(train_labels))
+    #print(np.shape(train_data))
+    #print(np.shape(train_labels))
 
-    test_data = (full_test[:,1:] - train_min(version)) / (train_max(version) - train_min(version))
+    test_data = 1. - 2. * (full_test[:,1:] - train_min(version)) / (train_max(version) - train_min(version))
     test_labels = (full_test[:,0] + class_modifier_add(version))*class_modifier_multi(version)
-    print(np.shape(test_data))
-    print(np.shape(test_labels))
+    #print(np.shape(test_data))
+    #print(np.shape(test_labels))
     test_number = np.shape(test_labels)[0]
     seq_length = max_seq_len(version)
 
