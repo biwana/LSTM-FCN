@@ -1,7 +1,8 @@
 from utils.constants import max_seq_len, nb_classes
 from utils.keras_utils import train_model, evaluate_model, set_trainable, visualize_context_vector, visualize_cam
-from utils.model_utils import lstm_fcn_model, alstm_fcn_model
-from utils.model_utils import cnn_raw_model, cnn_dtwfeatures_model, cnn_earlyfusion_model, cnn_midfusion_model, cnn_latefusion_model
+#from utils.model_utils import lstm_fcn_model, alstm_fcn_model
+#from utils.model_utils import cnn_raw_model, cnn_dtwfeatures_model, cnn_earlyfusion_model, cnn_midfusion_model, cnn_latefusion_model
+from utils.model_utils import cnn_midfusion_model_v2
 
 import sys
 import math
