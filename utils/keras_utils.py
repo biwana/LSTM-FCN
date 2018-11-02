@@ -90,6 +90,8 @@ def train_model(model:Model, dataset_id, method, proto_num, dataset_prefix, nb_i
         optm = SGD(lr=learning_rate, momentum=0.9, decay=5e-4)
     elif opt == 'Nadam':
         optm = Nadam(lr=learning_rate)
+    elif opt == 'Adam_decay':
+        optm = Adam(lr=learning_rate, decay=9./nb_iterations)
     else:
         optm = Adam(lr=learning_rate)
 
@@ -127,7 +129,7 @@ def evaluate_model(model:Model, dataset_id, method, proto_num, dataset_prefix, b
 
     if not is_timeseries:
         X_test = pad_sequences(X_test, maxlen=max_seq_len(dataset_id), padding='post', truncating='post')
-    y_test = to_categorical(y_test, len(np.unique(y_test)))
+    y_test = to_categorical(y_test, nb_classes(dataset_id)))
 
     optm = Adam(lr=1e-3)
     model.compile(optimizer=optm, loss='categorical_crossentropy', metrics=['accuracy'])
@@ -169,14 +171,14 @@ def hyperparameter_search_over_model(model_gen, dataset_id, param_grid, cutoff=N
         print("Model hyper parameters can only be searched for time series models")
         return
 
-    classes = np.unique(y_train)
+    classes = np.arange(0, nb_classes(dataset_id))
     le = LabelEncoder()
     y_ind = le.fit_transform(y_train.ravel())
     recip_freq = len(y_train) / (len(le.classes_) *
                                  np.bincount(y_ind).astype(np.float64))
     class_weight = recip_freq[le.transform(classes)]
 
-    y_train = to_categorical(y_train, len(np.unique(y_train)))
+    y_train = to_categorical(y_train, nb_classes(dataset_id)))
 
     clf = KerasClassifier(build_fn=model_gen,
                           epochs=50,

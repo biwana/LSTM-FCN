@@ -25,7 +25,7 @@ def load_dataset_at(index, method, proto_num, normalize_timeseries=False, verbos
     else:
         raise FileNotFoundError('File %s not found!' % (train_data))
 
-    X_train = ( df.values / 127.5 ) -1.
+    X_train = df.values
 
     if os.path.exists(train_labels):
         df = pd.read_csv(train_labels, delimiter=' ', header=None, encoding='latin-1')
@@ -52,7 +52,7 @@ def load_dataset_at(index, method, proto_num, normalize_timeseries=False, verbos
         raise FileNotFoundError('File %s not found!' % (test_data))
 
 
-    X_test = ( df.values / 127.5 ) -1.
+    X_test = df.values
 
     if os.path.exists(test_labels):
         df = pd.read_csv(test_labels, delimiter=' ', header=None, encoding='latin-1')

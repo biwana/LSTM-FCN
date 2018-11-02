@@ -260,6 +260,46 @@ def cnn_midfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     return model
 
+def cnn_midfusion_model_v2(nb_cnn, proto_num, max_seq_lenth, nb_class):
+    ip = Input(shape=(1+proto_num, max_seq_lenth))
+
+    ip1 = Lambda(slice_seq)(ip)
+    ip2 = Lambda(slice_dtw)(ip)
+
+    x1 = Permute((2, 1))(ip1)
+    x2 = Permute((2, 1))(ip2)
+
+    for i in range(nb_cnn):
+        i_prime = i if i < 2 else 2
+        nb_nodes = 64 * 2 ** i_prime
+
+        x1 = Conv1D(nb_nodes, 3, padding='same', kernel_initializer='he_uniform')(x1)
+        x1 = Activation('relu')(x1)
+        x1 = MaxPooling1D(pool_size=2)(x1)
+
+        x2 = Conv1D(nb_nodes, 3, padding='same', kernel_initializer='he_uniform')(x2)
+        x2 = Activation('relu')(x2)
+        x2 = MaxPooling1D(pool_size=2)(x2)
+
+
+    x = concatenate([x1, x2])
+
+    x = Flatten()(x)
+
+    x = Dense(1024, activation='relu')(x)
+    x = Dropout(0.5)(x)
+
+    x = Dense(1024, activation='relu')(x)
+    x = Dropout(0.5)(x)
+
+    out = Dense(nb_class, activation='softmax')(x)
+
+    model = Model(ip, out)
+
+    model.summary()
+
+    return model
+
 
 def cnn_latefusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
     ip = Input(shape=(1+proto_num, max_seq_lenth))

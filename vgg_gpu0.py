@@ -18,7 +18,6 @@ if __name__ == "__main__":
     max_seq_lenth = max_seq_len(dataset)
     nb_class = nb_classes(dataset)
     nb_cnn = int(round(math.log(max_seq_lenth, 2))-3)
-    print("Number of Pooling Layers: %s" % str(nb_cnn))
 
     #model = lstm_fcn_model(proto_num, max_seq_lenth, nb_class)
     #model = alstm_fcn_model(proto_num, max_seq_lenth, nb_class)
@@ -35,6 +34,7 @@ if __name__ == "__main__":
     model = vgg_midfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class)
     #model = vgg_latefusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class)
 
+    print("Number of Pooling Layers: %s" % str(nb_cnn))
 
     train_model(model, dataset, method, proto_num, dataset_prefix=dataset, nb_iterations=50000, batch_size=50, opt='Nadam', learning_rate=0.0001, early_stop=False, balance_classes=False, run_ver='vgg_')
 
