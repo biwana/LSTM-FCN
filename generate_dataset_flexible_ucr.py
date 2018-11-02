@@ -1,8 +1,6 @@
 import dtw
 import time
 import numpy as np
-#import input_data #_crossvalid as input_data
-#import network_settings as ns
 import math
 import csv
 import os
