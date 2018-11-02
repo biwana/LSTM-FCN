@@ -50,14 +50,14 @@ if __name__ == "__main__":
     train_max = np.max(full_train[:,1:])
     train_min = np.min(full_train[:,1:])
 
-    train_data = 1. - 2. * (full_train[:,1:] - train_min) / (train_max - train_min)
+    train_data = 2. * (full_train[:,1:] - train_min) / (train_max - train_min) - 1.
     train_labels = (full_train[:,0] + class_modifier_add(version))*class_modifier_multi(version)
 
     train_number = np.shape(train_labels)[0]
     #print(np.shape(train_data))
     #print(np.shape(train_labels))
 
-    test_data = 1. - 2. * (full_test[:,1:] - train_min) / (train_max - train_min)
+    test_data = 2. * (full_test[:,1:] - train_min) / (train_max - train_min) - 1.
     test_labels = (full_test[:,0] + class_modifier_add(version))*class_modifier_multi(version)
     #print(np.shape(test_data))
     #print(np.shape(test_labels))
@@ -119,7 +119,7 @@ if __name__ == "__main__":
             local_sample = test_data[sample]
             features = get_dtwfeatures(proto_data, proto_number, local_sample)
 
-            features = features * 2. - 1.
+            #features = features * 2. - 1.
             class_value = test_labels[sample]
 
             # write files
@@ -145,7 +145,7 @@ if __name__ == "__main__":
             local_sample = train_data[sample]
             features = get_dtwfeatures(proto_data, proto_number, local_sample)
 
-            features = features * 2. - 1.
+            #features = features * 2. - 1.
             class_value = train_labels[sample]
 
             # write files

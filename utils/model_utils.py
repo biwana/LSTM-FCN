@@ -8,17 +8,10 @@ from utils.layer_utils import AttentionLSTM
 
 TRAINABLE = True
 
-def slice_seq(x):
-    return x[:, :1]
-
-def slice_dtw(x):
-    return x[:, 1:]
 
 def lstm_fcn_model(proto_num, max_seq_lenth, nb_class):
-    ip = Input(shape=(1+proto_num, max_seq_lenth))
-
-    ip1 = Lambda(slice_seq)(ip)
-    ip2 = Lambda(slice_dtw)(ip)
+    ip1 = Input(shape=(1, max_seq_lenth))
+    ip2 = Input(shape=(proto_num, max_seq_lenth))
 
     x1 = LSTM(128)(ip1)
     x1 = Dropout(0.8)(x1)
@@ -70,7 +63,7 @@ def lstm_fcn_model(proto_num, max_seq_lenth, nb_class):
 
     out = Dense(nb_class, activation='softmax')(x)
 
-    model = Model(ip, out)
+    model = Model([ip1, ip2], out)
 
     model.summary()
 
@@ -78,10 +71,8 @@ def lstm_fcn_model(proto_num, max_seq_lenth, nb_class):
 
 
 def alstm_fcn_model(proto_num, max_seq_lenth, nb_class):
-    ip = Input(shape=(1+proto_num, max_seq_lenth))
-
-    ip1 = Lambda(slice_seq)(ip)
-    ip2 = Lambda(slice_dtw)(ip)
+    ip1 = Input(shape=(1, max_seq_lenth))
+    ip2 = Input(shape=(proto_num, max_seq_lenth))
 
     x1 = AttentionLSTM(128)(ip1)
     x1 = Dropout(0.8)(x1)
@@ -133,17 +124,15 @@ def alstm_fcn_model(proto_num, max_seq_lenth, nb_class):
 
     out = Dense(nb_class, activation='softmax')(x)
 
-    model = Model(ip, out)
+    model = Model([ip1, ip2], out)
 
     model.summary()
 
     return model
 
 def cnn_raw_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
-    ip = Input(shape=(1+proto_num, max_seq_lenth))
-
-    ip1 = Lambda(slice_seq)(ip)
-    ip2 = Lambda(slice_dtw)(ip)
+    ip1 = Input(shape=(1, max_seq_lenth))
+    ip2 = Input(shape=(proto_num, max_seq_lenth))
 
     x = Permute((2, 1))(ip1)
 
@@ -169,10 +158,8 @@ def cnn_raw_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
     return model
 
 def cnn_dtwfeatures_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
-    ip = Input(shape=(1+proto_num, max_seq_lenth))
-
-    ip1 = Lambda(slice_seq)(ip)
-    ip2 = Lambda(slice_dtw)(ip)
+    ip1 = Input(shape=(1, max_seq_lenth))
+    ip2 = Input(shape=(proto_num, max_seq_lenth))
 
     x = Permute((2, 1))(ip2)
 
@@ -191,16 +178,19 @@ def cnn_dtwfeatures_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     out = Dense(nb_class, activation='softmax')(x)
 
-    model = Model(ip, out)
+    model = Model([ip1, ip2], out)
 
     model.summary()
 
     return model
 
 def cnn_earlyfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
-    ip = Input(shape=(1+proto_num, max_seq_lenth))
+    ip1 = Input(shape=(1, max_seq_lenth))
+    ip2 = Input(shape=(proto_num, max_seq_lenth))
 
-    x = Permute((2, 1))(ip)
+    x1 = Permute((2, 1))(ip1)
+    x2 = Permute((2, 1))(ip2)
+    x = concatenate([x1, x2])
 
     for i in range(nb_cnn):
         x = Conv1D(256, 3, padding='same', kernel_initializer='he_uniform')(x)
@@ -217,17 +207,15 @@ def cnn_earlyfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     out = Dense(nb_class, activation='softmax')(x)
 
-    model = Model(ip, out)
+    model = Model([ip1, ip2], out)
 
     model.summary()
 
     return model
 
 def cnn_midfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
-    ip = Input(shape=(1+proto_num, max_seq_lenth))
-
-    ip1 = Lambda(slice_seq)(ip)
-    ip2 = Lambda(slice_dtw)(ip)
+    ip1 = Input(shape=(1, max_seq_lenth))
+    ip2 = Input(shape=(proto_num, max_seq_lenth))
 
     x1 = Permute((2, 1))(ip1)
     x2 = Permute((2, 1))(ip2)
@@ -254,17 +242,15 @@ def cnn_midfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     out = Dense(nb_class, activation='softmax')(x)
 
-    model = Model(ip, out)
+    model = Model([ip1, ip2], out)
 
     model.summary()
 
     return model
 
 def cnn_midfusion_model_v2(nb_cnn, proto_num, max_seq_lenth, nb_class):
-    ip = Input(shape=(1+proto_num, max_seq_lenth))
-
-    ip1 = Lambda(slice_seq)(ip)
-    ip2 = Lambda(slice_dtw)(ip)
+    ip1 = Input(shape=(1, max_seq_lenth))
+    ip2 = Input(shape=(proto_num, max_seq_lenth))
 
     x1 = Permute((2, 1))(ip1)
     x2 = Permute((2, 1))(ip2)
@@ -294,7 +280,7 @@ def cnn_midfusion_model_v2(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     out = Dense(nb_class, activation='softmax')(x)
 
-    model = Model(ip, out)
+    model = Model([ip1, ip2], out)
 
     model.summary()
 
@@ -302,10 +288,8 @@ def cnn_midfusion_model_v2(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
 
 def cnn_latefusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
-    ip = Input(shape=(1+proto_num, max_seq_lenth))
-
-    ip1 = Lambda(slice_seq)(ip)
-    ip2 = Lambda(slice_dtw)(ip)
+    ip1 = Input(shape=(1, max_seq_lenth))
+    ip2 = Input(shape=(proto_num, max_seq_lenth))
 
     x1 = Permute((2, 1))(ip1)
     x2 = Permute((2, 1))(ip2)
@@ -338,7 +322,7 @@ def cnn_latefusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     out = Dense(nb_class, activation='softmax')(x)
 
-    model = Model(ip, out)
+    model = Model([ip1, ip2], out)
 
     model.summary()
 
@@ -346,10 +330,8 @@ def cnn_latefusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
 
 def vgg_raw_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
-    ip = Input(shape=(1+proto_num, max_seq_lenth))
-
-    ip1 = Lambda(slice_seq)(ip)
-    ip2 = Lambda(slice_dtw)(ip)
+    ip1 = Input(shape=(1, max_seq_lenth))
+    ip2 = Input(shape=(proto_num, max_seq_lenth))
 
     x = Permute((2, 1))(ip1)
 
@@ -374,18 +356,15 @@ def vgg_raw_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     out = Dense(nb_class, activation='softmax')(x)
 
-    model = Model(ip, out)
+    model = Model([ip1, ip2], out)
 
     model.summary()
 
     return model
 
 def vgg_dtwfeatures_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
-    ip = Input(shape=(1+proto_num, max_seq_lenth))
-
-    ip1 = Lambda(slice_seq)(ip)
-    ip2 = Lambda(slice_dtw)(ip)
-
+    ip1 = Input(shape=(1, max_seq_lenth))
+    ip2 = Input(shape=(proto_num, max_seq_lenth))
     x = Permute((2, 1))(ip2)
 
     for i in range(nb_cnn):
@@ -409,16 +388,19 @@ def vgg_dtwfeatures_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     out = Dense(nb_class, activation='softmax')(x)
 
-    model = Model(ip, out)
+    model = Model([ip1, ip2], out)
 
     model.summary()
 
     return model
 
 def vgg_earlyfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
-    ip = Input(shape=(1+proto_num, max_seq_lenth))
+    ip1 = Input(shape=(1, max_seq_lenth))
+    ip2 = Input(shape=(proto_num, max_seq_lenth))
 
-    x = Permute((2, 1))(ip)
+    x1 = Permute((2, 1))(ip1)
+    x2 = Permute((2, 1))(ip2)
+    x = concatenate([x1, x2])
 
     for i in range(nb_cnn):
         i_prime = i if i < 3 else 3
@@ -441,17 +423,15 @@ def vgg_earlyfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     out = Dense(nb_class, activation='softmax')(x)
 
-    model = Model(ip, out)
+    model = Model([ip1, ip2], out)
 
     model.summary()
 
     return model
 
 def vgg_midfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
-    ip = Input(shape=(1+proto_num, max_seq_lenth))
-
-    ip1 = Lambda(slice_seq)(ip)
-    ip2 = Lambda(slice_dtw)(ip)
+    ip1 = Input(shape=(1, max_seq_lenth))
+    ip2 = Input(shape=(proto_num, max_seq_lenth))
 
     x1 = Permute((2, 1))(ip1)
     x2 = Permute((2, 1))(ip2)
@@ -486,7 +466,7 @@ def vgg_midfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     out = Dense(nb_class, activation='softmax')(x)
 
-    model = Model(ip, out)
+    model = Model([ip1, ip2], out)
 
     model.summary()
 
@@ -494,10 +474,8 @@ def vgg_midfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
 
 def vgg_latefusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
-    ip = Input(shape=(1+proto_num, max_seq_lenth))
-
-    ip1 = Lambda(slice_seq)(ip)
-    ip2 = Lambda(slice_dtw)(ip)
+    ip1 = Input(shape=(1, max_seq_lenth))
+    ip2 = Input(shape=(proto_num, max_seq_lenth))
 
     x1 = Permute((2, 1))(ip1)
     x2 = Permute((2, 1))(ip2)
@@ -538,7 +516,7 @@ def vgg_latefusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     out = Dense(nb_class, activation='softmax')(x)
 
-    model = Model(ip, out)
+    model = Model([ip1, ip2], out)
 
     model.summary()
 
