@@ -726,7 +726,7 @@ def max_seq_len(dataset):
     if dataset == "DiatomSizeReduction":
         return 345
     if dataset == "DistalPhalanxOutlineAgeGroup":
-        return 0
+        return 80
     if dataset == "DistalPhalanxOutlineCorrect":
         return 80
     if dataset == "DistalPhalanxTW":
