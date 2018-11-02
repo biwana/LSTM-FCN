@@ -119,6 +119,7 @@ if __name__ == "__main__":
             local_sample = test_data[sample]
             features = get_dtwfeatures(proto_data, proto_number, local_sample)
 
+            features = features * 2. - 1.
             class_value = test_labels[sample]
 
             # write files
@@ -144,6 +145,7 @@ if __name__ == "__main__":
             local_sample = train_data[sample]
             features = get_dtwfeatures(proto_data, proto_number, local_sample)
 
+            features = features * 2. - 1.
             class_value = train_labels[sample]
 
             # write files
