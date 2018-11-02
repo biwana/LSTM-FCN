@@ -31,6 +31,11 @@ def load_dataset_at(index, method, proto_num, normalize_timeseries=False, verbos
     X_train1 = df.values
     X_train1 = np.reshape(X_train1, (np.shape(X_train1)[0], dim, int(np.shape(X_train1)[1]/(dim))))
 
+    if normalize_timeseries:
+        X_train1_min = np.min(X_train1)
+        X_train1_max = np.max(X_train1)
+        X_train1 = 2. * (X_train1 - X_train1_min) / (X_train1_max - X_train1_min) - 1.
+
     if os.path.exists(train_data2):
         df = pd.read_csv(train_data2, delimiter=' ', header=None, encoding='latin-1')
     else:
@@ -40,9 +45,9 @@ def load_dataset_at(index, method, proto_num, normalize_timeseries=False, verbos
     X_train2 = np.reshape(X_train2, (np.shape(X_train2)[0], proto_num, int(np.shape(X_train2)[1]/(proto_num))))
 
     if normalize_timeseries:
-        X_train_min = np.min(X_train2)
-        X_train_max = np.max(X_train2)
-        X_train2 = 2. * (X_train2 - X_train_min) / (X_train_max - X_train_min) - 1.
+        X_train2_min = np.min(X_train2)
+        X_train2_max = np.max(X_train2)
+        X_train2 = 2. * (X_train2 - X_train2_min) / (X_train2_max - X_train2_min) - 1.
 
     if os.path.exists(train_labels):
         df = pd.read_csv(train_labels, delimiter=' ', header=None, encoding='latin-1')
@@ -61,6 +66,9 @@ def load_dataset_at(index, method, proto_num, normalize_timeseries=False, verbos
     X_test1 = df.values
     X_test1 = np.reshape(X_test1, (np.shape(X_test1)[0], dim, int(np.shape(X_test1)[1]/(dim))))
 
+    if normalize_timeseries:
+        X_test1 = 2. * (X_test1 - X_train1_min) / (X_train1_max - X_train1_min) - 1.
+
     if os.path.exists(test_data2):
         df = pd.read_csv(test_data2, delimiter=' ', header=None, encoding='latin-1')
     else:
@@ -70,7 +78,7 @@ def load_dataset_at(index, method, proto_num, normalize_timeseries=False, verbos
     X_test2 = np.reshape(X_test2, (np.shape(X_test2)[0], proto_num, int(np.shape(X_test2)[1]/(proto_num))))
 
     if normalize_timeseries:
-        X_test2 = 2. * (X_test2 - X_train_min) / (X_train_max - X_train_min) - 1.
+        X_test2 = 2. * (X_test2 - X_train2_min) / (X_train2_max - X_train2_min) - 1.
 
     if os.path.exists(test_labels):
         df = pd.read_csv(test_labels, delimiter=' ', header=None, encoding='latin-1')
