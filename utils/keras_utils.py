@@ -86,6 +86,8 @@ def evaluate_model(model:Model, dataset_id, method, proto_num, dataset_prefix, b
                    cutoff=None, normalize_timeseries=False, checkpoint_prefix="loss"):
     X_train1, X_train2, y_train, X_test1, X_test2, y_test, is_timeseries = load_dataset_at(dataset_id, method, proto_num, normalize_timeseries=normalize_timeseries)
     
+    y_test = to_categorical(y_test, nb_classes(dataset_id))
+
     optm = Adam(lr=1e-3)
     model.compile(optimizer=optm, loss='categorical_crossentropy', metrics=['accuracy'])
 
