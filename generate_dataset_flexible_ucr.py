@@ -5,7 +5,7 @@ import math
 import csv
 import os
 import sys
-from utils.constants import param_selector, class_modifier_add, class_modifier_multi, max_seq_len, train_max, train_min
+from utils.constants import nb_classes, class_modifier_add, class_modifier_multi, max_seq_len, train_max, train_min
 
 
 def get_dtwfeatures(proto_data, proto_number, local_sample):
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     full_train = np.genfromtxt(full_train_file, delimiter=',')
     full_test = np.genfromtxt(full_test_file, delimiter=',')
 
-    no_classes = param_selector(version)
+    no_classes = nb_classes(version)
     # print(proto_number)
 
     train_data = (full_train[:,1:] - train_min(version)) / (train_max(version) - train_min(version))
