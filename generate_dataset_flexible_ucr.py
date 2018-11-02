@@ -5,7 +5,9 @@ import math
 import csv
 import os
 import sys
-from utils.constants import nb_classes, class_modifier_add, class_modifier_multi, max_seq_len, train_max, train_min
+from utils.constants import nb_classes, class_modifier_add, class_modifier_multi, max_seq_len
+from utils.proto_select import selector_selector, random_selection, center_selection, k_centers_selection, border_selection, spanning_selection
+
 
 
 def get_dtwfeatures(proto_data, proto_number, local_sample):
@@ -23,70 +25,6 @@ def read_dtw_matrix(version):
     if not os.path.exists(os.path.join("data", "all-"+version+"-dtw-matrix.txt")):
         exit("Please run cross_dtw.py first")
     return np.genfromtxt(os.path.join("data", "all-"+version+"-dtw-matrix.txt"), delimiter=' ')
-
-def random_selection(proto_number, train_number):
-    # gets random prototypes
-    return np.random.randint(train_number, size=proto_number)
-
-def center_selection(proto_number, distances):
-    # gets the center prototypes
-    return np.argsort(np.sum(distances, axis=1))[:proto_number]
-
-def border_selection(proto_number, distances):
-    # gets the border prototypes
-    return np.argsort(np.sum(distances, axis=1))[::-1][:proto_number]
-
-def spanning_selection(proto_number, distances):
-    # gets the spanning prototypes
-    proto_loc = center_selection(1, distances)
-    choice_loc = np.delete(np.arange(np.shape(distances)[0]), proto_loc, 0)
-    for iter in range(proto_number-1):
-        d = distances[choice_loc]
-        p = np.array([choice_loc[np.argmax(np.min(d[:,proto_loc], axis=1))]])
-        proto_loc = np.append(proto_loc, p)
-        choice_loc = np.delete(choice_loc, p, 0)
-    return proto_loc
-
-def k_centers_selection(proto_number, distances):
-    # finds k centers
-    no_possible = np.shape(distances)[0]
-
-    # initialize with spanning
-    proto_loc = spanning_selection(proto_number, distances)
-    for iter in range(1000):
-        # assign every point into a group with the centers
-        membership = np.zeros(no_possible, dtype=np.int32)
-        for i, d in enumerate(distances):
-            membership[i] = proto_loc[np.argmin(d[proto_loc])]
-
-        # find center of groups
-        was_change = False
-        for i, p in enumerate(proto_loc):
-            p_group = np.where(membership==p)[0]
-            d_matrix = distances[p_group]
-            new_center = p_group[center_selection(1, d_matrix[:,p_group])][0]
-            if new_center != p:
-                proto_loc[i] = new_center
-                was_change = True
-        if was_change == False:
-            print("stopping at {}".format(iter))
-            break
-    return proto_loc
-
-
-def selector_selector(selection, proto_number, distances):
-    if selection == "random":
-        return random_selection(proto_number, distances)
-    elif selection == "centers":
-        return center_selection(proto_number, distances)
-    elif selection == "borders":
-        return border_selection(proto_number, distances)
-    elif selection == "spanning":
-        return spanning_selection(proto_number, distances)
-    elif selection == "kcenters":
-        return k_centers_selection(proto_number, distances)
-    else:
-        return random_selection(proto_number)
 
 if __name__ == "__main__":
     if len(sys.argv) < 5:
@@ -109,14 +47,17 @@ if __name__ == "__main__":
     no_classes = nb_classes(version)
     # print(proto_number)
 
-    train_data = 1. - 2. * (full_train[:,1:] - train_min(version)) / (train_max(version) - train_min(version))
+    train_max = np.max(full_train[:,1:])
+    train_min = np.min(full_train[:,1:])
+
+    train_data = 1. - 2. * (full_train[:,1:] - train_min) / (train_max - train_min)
     train_labels = (full_train[:,0] + class_modifier_add(version))*class_modifier_multi(version)
 
     train_number = np.shape(train_labels)[0]
     #print(np.shape(train_data))
     #print(np.shape(train_labels))
 
-    test_data = 1. - 2. * (full_test[:,1:] - train_min(version)) / (train_max(version) - train_min(version))
+    test_data = 1. - 2. * (full_test[:,1:] - train_min) / (train_max - train_min)
     test_labels = (full_test[:,0] + class_modifier_add(version))*class_modifier_multi(version)
     #print(np.shape(test_data))
     #print(np.shape(test_labels))

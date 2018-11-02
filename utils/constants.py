@@ -865,6 +865,7 @@ def max_seq_len(dataset):
         return 426
     exit('missing dataset')
 
+# not used but here just in case
 def train_max(dataset):
     if dataset == "50words":
         return 5.0184 #270
@@ -1038,6 +1039,7 @@ def train_max(dataset):
         return 2.405 #426
     exit('missing dataset')
 
+# not used but here just in case
 def train_min(dataset):
     if dataset == "50words":
         return -2.3543 #270
