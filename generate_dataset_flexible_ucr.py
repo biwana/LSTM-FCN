@@ -113,10 +113,13 @@ if __name__ == "__main__":
     train_labels = (full_train[:,0] + class_modifier_add(version))*class_modifier_multi(version)
 
     train_number = np.shape(train_labels)[0]
+    print(np.shape(train_data))
+    print(np.shape(train_labels))
 
     test_data = (full_test[:,1:] - train_min(version)) / (train_max(version) - train_min(version))
     test_labels = (full_test[:,0] + class_modifier_add(version))*class_modifier_multi(version)
-
+    print(np.shape(test_data))
+    print(np.shape(test_labels))
     test_number = np.shape(test_labels)[0]
     seq_length = max_seq_len(version)
 
@@ -184,8 +187,8 @@ if __name__ == "__main__":
             writer_test_dtw.writerow(feature_flat)
             writer_test_combined.writerow(np.append(local_sample_flat, feature_flat))
             writer_test_label.writerow(["{}-{}_test.png".format(class_value, sample), class_value])
-            if sample % (train_number // 100) == 0:
-                print("{} {}%: Test < {} Done".format(version, str(sample / (test_number // 100)),str(sample)))
+            if sample % (test_number // 20) == 0:
+                print("{} {}%: Test < {} Done".format(version, str(100. * sample / test_number),str(sample)))
     print("{}: Test Done".format(version))
 
     # train set
@@ -209,9 +212,9 @@ if __name__ == "__main__":
             writer_train_dtw.writerow(feature_flat)
             writer_train_combined.writerow(np.append(local_sample_flat, feature_flat))
             writer_train_label.writerow(["{}-{}_train.png".format(class_value, sample), class_value])
-
-            if sample % (train_number // 100) == 0:
-                print("{} {}%: Training < {} Done".format(version, str(sample / (train_number // 100)),str(sample)))
+            
+            if sample % (train_number // 20) == 0:
+                print("{} {}%: Training < {} Done".format(version, str(100. * sample / train_number),str(sample)))
     print("{}: Training Done".format(version))
 
 

@@ -32,8 +32,8 @@ if __name__ == "__main__":
             for t2 in range(train_number):
                 writeline[t2] = dtw.dtw(train_data[t1], train_data[t2], extended=False)
             writer.writerow(writeline)
-            if t1 % (train_number // 100) == 0:
-                print("step: %s %s% time: %s" % (str(t1), str(t1 / (train_number // 100)), str(time.time()-lap)))
+            if t1 % (train_number // 20) == 0:
+                print("step: %s %s% time: %s" % (str(t1), str(100. * t1 / train_number), str(time.time()-lap)))
                 lap = time.time()
 
 print("Done")
