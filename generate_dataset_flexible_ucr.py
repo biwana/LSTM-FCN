@@ -188,7 +188,7 @@ if __name__ == "__main__":
             writer_test_combined.writerow(np.append(local_sample_flat, feature_flat))
             writer_test_label.writerow(["{}-{}_test.png".format(class_value, sample), class_value])
             if sample % (test_number // 20) == 0:
-                print("{} {}%: Test < {} Done".format(version, str(100. * sample / test_number),str(sample)))
+                print("{} {}%: Test < {} Done".format(version, str(round(100. * sample / test_number, 1)),str(sample)))
     print("{}: Test Done".format(version))
 
     # train set
@@ -214,7 +214,7 @@ if __name__ == "__main__":
             writer_train_label.writerow(["{}-{}_train.png".format(class_value, sample), class_value])
             
             if sample % (train_number // 20) == 0:
-                print("{} {}%: Training < {} Done".format(version, str(100. * sample / train_number),str(sample)))
+                print("{} {}%: Training < {} Done".format(version, str(round(100. * sample / train_number,1)),str(sample)))
     print("{}: Training Done".format(version))
 
 
