@@ -129,7 +129,7 @@ def evaluate_model(model:Model, dataset_id, method, proto_num, dataset_prefix, b
 
     if not is_timeseries:
         X_test = pad_sequences(X_test, maxlen=max_seq_len(dataset_id), padding='post', truncating='post')
-    y_test = to_categorical(y_test, nb_classes(dataset_id)))
+    y_test = to_categorical(y_test, nb_classes(dataset_id))
 
     optm = Adam(lr=1e-3)
     model.compile(optimizer=optm, loss='categorical_crossentropy', metrics=['accuracy'])
@@ -178,7 +178,7 @@ def hyperparameter_search_over_model(model_gen, dataset_id, param_grid, cutoff=N
                                  np.bincount(y_ind).astype(np.float64))
     class_weight = recip_freq[le.transform(classes)]
 
-    y_train = to_categorical(y_train, nb_classes(dataset_id)))
+    y_train = to_categorical(y_train, nb_classes(dataset_id))
 
     clf = KerasClassifier(build_fn=model_gen,
                           epochs=50,
