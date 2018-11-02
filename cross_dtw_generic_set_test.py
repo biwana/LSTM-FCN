@@ -1,4 +1,4 @@
-import dtw
+import utils.dtw as dtw
 import time
 import numpy as np
 import os

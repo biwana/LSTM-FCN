@@ -1,11 +1,11 @@
-import dtw
+import utils.dtw as dtw
 import time
 import numpy as np
 import math
 import csv
 import os
 import sys
-from constants import param_selector, class_modifier_add, class_modifier_multi, max_seq_len, train_max, train_min
+from utils.constants import param_selector, class_modifier_add, class_modifier_multi, max_seq_len, train_max, train_min
 
 
 def get_dtwfeatures(proto_data, proto_number, local_sample):
