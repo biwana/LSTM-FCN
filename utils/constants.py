@@ -1,178 +1,28 @@
-
-def max_seq_len(dataset):
-    if dataset == "50words":
-        return 270
-    if dataset == "Adiac":
-        return 176
-    if dataset == "ArrowHead":
-        return 251
-    if dataset == "Beef":
-        return 470
-    if dataset == "BeetleFly":
-        return 512
-    if dataset == "BirdChicken":
-        return 512
-    if dataset == "Car":
-        return 577
-    if dataset == "CBF":
-        return 128
-    if dataset == "ChlorineConcentration":
-        return 166
-    if dataset == "CinC_ECG_torso":
-        return 1639
-    if dataset == "Coffee":
-        return 286
-    if dataset == "Computers":
-        return 720
-    if dataset == "Cricket_X":
-        return 300
-    if dataset == "Cricket_Y":
-        return 300
-    if dataset == "Cricket_Z":
-        return 300
-    if dataset == "DiatomSizeReduction":
-        return 345
-    if dataset == "DistalPhalanxOutlineAgeGroup":
-        return 80
-    if dataset == "DistalPhalanxOutlineCorrect":
-        return 80
-    if dataset == "DistalPhalanxTW":
-        return 80
-    if dataset == "Earthquakes":
-        return 512
-    if dataset == "ECG200":
-        return 96
-    if dataset == "ECG5000":
-        return 140
-    if dataset == "ECGFiveDays":
-        return 136
-    if dataset == "ElectricDevices":
-        return 96
-    if dataset == "FaceAll":
-        return 131
-    if dataset == "FaceFour":
-        return 350
-    if dataset == "FacesUCR":
-        return 131
-    if dataset == "FISH":
-        return 463
-    if dataset == "FordA":
-        return 500
-    if dataset == "FordB":
-        return 500
-    if dataset == "Gun_Point":
-        return 150
-    if dataset == "Ham":
-        return 431
-    if dataset == "HandOutlines":
-        return 2709
-    if dataset == "Haptics":
-        return 1092
-    if dataset == "Herring":
-        return 512
-    if dataset == "InlineSkate":
-        return 1882
-    if dataset == "InsectWingbeatSound":
-        return 256
-    if dataset == "ItalyPowerDemand":
-        return 24
-    if dataset == "LargeKitchenAppliances":
-        return 720
-    if dataset == "Lighting2":
-        return 637
-    if dataset == "Lighting7":
-        return 319
-    if dataset == "MALLAT":
-        return 1024
-    if dataset == "Meat":
-        return 448
-    if dataset == "MedicalImages":
-        return 99
-    if dataset == "MiddlePhalanxOutlineAgeGroup":
-        return 80
-    if dataset == "MiddlePhalanxOutlineCorrect":
-        return 80
-    if dataset == "MiddlePhalanxTW":
-        return 80
-    if dataset == "MoteStrain":
-        return 84
-    if dataset == "NonInvasiveFatalECG_Thorax1":
-        return 750
-    if dataset == "NonInvasiveFatalECG_Thorax2":
-        return 750
-    if dataset == "OliveOil":
-        return 570
-    if dataset == "OSULeaf":
-        return 427
-    if dataset == "PhalangesOutlinesCorrect":
-        return 80
-    if dataset == "Phoneme":
-        return 1024
-    if dataset == "Plane":
-        return 144
-    if dataset == "ProximalPhalanxOutlineAgeGroup":
-        return 80
-    if dataset == "ProximalPhalanxOutlineCorrect":
-        return 80
-    if dataset == "ProximalPhalanxTW":
-        return 80
-    if dataset == "RefrigerationDevices":
-        return 720
-    if dataset == "ScreenType":
-        return 720
-    if dataset == "ShapeletSim":
-        return 500
-    if dataset == "ShapesAll":
-        return 512
-    if dataset == "SmallKitchenAppliances":
-        return 720
-    if dataset == "SonyAIBORobotSurfaceII":
-        return 65
-    if dataset == "SonyAIBORobotSurface":
-        return 70
-    if dataset == "StarLightCurves":
-        return 1024
-    if dataset == "Strawberry":
-        return 235
-    if dataset == "SwedishLeaf":
-        return 128
-    if dataset == "Symbols":
-        return 398
-    if dataset == "synthetic_control":
-        return 60
-    if dataset == "ToeSegmentation1":
-        return 277
-    if dataset == "ToeSegmentation2":
-        return 343
-    if dataset == "Trace":
-        return 275
-    if dataset == "TwoLeadECG":
-        return 82
-    if dataset == "Two_Patterns":
-        return 128
-    if dataset == "uWaveGestureLibrary_X":
-        return 315
-    if dataset == "uWaveGestureLibrary_Y":
-        return 315
-    if dataset == "uWaveGestureLibrary_Z":
-        return 315
-    if dataset == "UWaveGestureLibraryAll":
-        return 945
-    if dataset == "wafer":
-        return 152
-    if dataset == "Wine":
-        return 234
-    if dataset == "WordsSynonyms":
-        return 270
-    if dataset == "Worms":
-        return 900
-    if dataset == "WormsTwoClass":
-        return 900
-    if dataset == "yoga":
-        return 426
-    exit('missing dataset')
+def nb_dims(dataset):
+    if dataset == "uciadl":
+        return 3
+    if dataset == "uciasl3":
+        return 8
+    if dataset == "uciasl95":
+        return 8
+    if dataset == "uciarabic":
+        return 13
+    else:
+        return 1
 
 def nb_classes(dataset):
+    if dataset == "uciadl":
+        return 7
+    if dataset == "uciasl3":
+        return 3
+    if dataset == "uciasl95":
+        return 95
+    if dataset == "uciarabic":
+        return 10
+    if dataset == "ucihillvalley":
+        return 2
+    if dataset == "ucihillvalleynoise":
+        return 2 
     if dataset == "50words":
         return 50 #270
     if dataset == "Adiac":
@@ -693,6 +543,18 @@ def class_modifier_multi(dataset):
     exit('missing dataset')
 
 def max_seq_len(dataset):
+    if dataset == "uciadl":
+        return 500
+    if dataset == "uciasl3":
+        return 100
+    if dataset == "uciasl95":
+        return 100
+    if dataset == "uciarabic":
+        return 40
+    if dataset == "ucihillvalley":
+        return 100
+    if dataset == "ucihillvalleynoise":
+        return 100
     if dataset == "50words":
         return 270
     if dataset == "Adiac":

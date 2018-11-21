@@ -9,17 +9,17 @@ mpl.style.use('seaborn-paper')
 from utils.constants import max_seq_len, nb_classes, nb_dims
 
 
-def load_dataset_at(index, method, proto_num, normalize_timeseries=False, verbose=True) -> (np.array, np.array):
+def load_dataset_at(index, method, proto_num, fold, normalize_timeseries=False, verbose=True) -> (np.array, np.array):
     dim = nb_dims(index) 
 
-    train_data1 = "data/all-raw-train-data-%s-%s-%s.txt" % (index, method, str(proto_num))
-    test_data1 = "data/all-raw-test-data-%s-%s-%s.txt" % (index, method, str(proto_num))
+    train_data1 = "data/fold%s-raw-train-data-%s-%s-%s.txt" % (fold, index, method, str(proto_num))
+    test_data1 = "data/fold%s-raw-test-data-%s-%s-%s.txt" % (fold, index, method, str(proto_num))
 
-    train_data2 = "data/all-dtw_features-train-data-%s-%s-%s.txt" % (index, method, str(proto_num))
-    test_data2 = "data/all-dtw_features-test-data-%s-%s-%s.txt" % (index, method, str(proto_num))
+    train_data2 = "data/fold%s-dtw_features-train-data-%s-%s-%s.txt" % (fold, index, method, str(proto_num))
+    test_data2 = "data/fold%s-dtw_features-test-data-%s-%s-%s.txt" % (fold, index, method, str(proto_num))
 
-    train_labels = "data/all-train-label-%s-%s-%s.txt" % (index, method, str(proto_num))
-    test_labels = "data/all-test-label-%s-%s-%s.txt" % (index, method, str(proto_num))
+    train_labels = "data/fold%s-train-label-%s-%s-%s.txt" % (fold, index, method, str(proto_num))
+    test_labels = "data/fold%s-test-label-%s-%s-%s.txt" % (fold, index, method, str(proto_num))
 
 
     is_timeseries = True # assume all input data is univariate time series

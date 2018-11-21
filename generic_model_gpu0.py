@@ -1,4 +1,4 @@
-from utils.constants import max_seq_len, nb_classes
+from utils.constants import max_seq_len, nb_classes, nb_dims
 from utils.keras_utils import train_model, evaluate_model
 #from utils.model_utils import lstm_fcn_model, alstm_fcn_model
 #from utils.model_utils import cnn_raw_model, cnn_dtwfeatures_model, cnn_earlyfusion_model, cnn_midfusion_model, cnn_latefusion_model
@@ -14,10 +14,10 @@ if __name__ == "__main__":
     dataset = sys.argv[1]
     method = sys.argv[2]
     proto_num = int(sys.argv[3])
-    #nb_cnn = int(sys.argv[4])
 
     max_seq_lenth = max_seq_len(dataset)
     nb_class = nb_classes(dataset)
+    dim_num = nb_dims(dataset)
     nb_cnn = int(round(math.log(max_seq_lenth, 2))-3)
 
     #model = lstm_fcn_model(proto_num, max_seq_lenth, nb_class)
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     #model = cnn_raw_model(nb_cnn, proto_num, max_seq_lenth, nb_class)
     #model = cnn_dtwfeatures_model(nb_cnn, proto_num, max_seq_lenth, nb_class)
     #model = cnn_earlyfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class)
-    model = cnn_midfusion_model_v2(nb_cnn, proto_num, max_seq_lenth, nb_class)
+    model = cnn_midfusion_model_v2(nb_cnn, dim_num, proto_num, max_seq_lenth, nb_class)
     #model = cnn_latefusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class)
 
     print("Number of Pooling Layers: %s" % str(nb_cnn))

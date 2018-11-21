@@ -248,8 +248,8 @@ def cnn_midfusion_model(nb_cnn, proto_num, max_seq_lenth, nb_class):
 
     return model
 
-def cnn_midfusion_model_v2(nb_cnn, proto_num, max_seq_lenth, nb_class):
-    ip1 = Input(shape=(1, max_seq_lenth))
+def cnn_midfusion_model_v2(nb_cnn, dim_num, proto_num, max_seq_lenth, nb_class):
+    ip1 = Input(shape=(dim_num, max_seq_lenth))
     ip2 = Input(shape=(proto_num, max_seq_lenth))
 
     x1 = Permute((2, 1))(ip1)

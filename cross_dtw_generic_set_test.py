@@ -33,7 +33,7 @@ if __name__ == "__main__":
                 writeline[t2] = dtw.dtw(train_data[t1], train_data[t2], extended=False)
             writer.writerow(writeline)
             if t1 % (train_number // 20) == 0:
-                print("step: %s %s time: %s" % (str(t1), str(round(100. * t1 / train_number),1), str(round(time.time()-lap),1)))
+                print("step: %s time: %s" % (str(t1), str(time.time()-lap)))
                 lap = time.time()
 
 print("Done")
