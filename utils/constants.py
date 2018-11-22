@@ -16,7 +16,7 @@ def nb_classes(dataset):
     if dataset == "uciasl3":
         return 3
     if dataset == "uciasl95":
-        return 95
+        return 96
     if dataset == "uciarabic":
         return 10
     if dataset == "ucihillvalley":
